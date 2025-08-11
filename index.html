@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fart Soundboard Extravaganza Deluxe</title>
+  <title>Ultimate Soundboard Deluxe</title>
   <style>
     /* Reset */
     * {
@@ -15,14 +15,14 @@
       height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow-x: hidden;
-      background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
-      color: #222;
+      background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+      color: #eee;
       transition: background 0.4s ease, color 0.4s ease;
       position: relative;
     }
     body.dark {
-      background: linear-gradient(135deg, #222 0%, #000 100%);
-      color: #ddd;
+      background: linear-gradient(135deg, #111 0%, #222 100%);
+      color: #ccc;
     }
 
     /* Particle Canvas */
@@ -41,9 +41,10 @@
     #app {
       position: relative;
       z-index: 10;
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 20px 15px 60px 15px;
+      user-select: none;
     }
 
     h1 {
@@ -51,16 +52,7 @@
       font-weight: 900;
       font-size: 3rem;
       margin-bottom: 5px;
-      text-shadow: 2px 2px 5px rgba(255, 69, 0, 0.8);
-      user-select: none;
-    }
-    h2 {
-      margin-top: 0;
-      font-weight: 700;
-      font-size: 1.8rem;
-      text-align: center;
-      margin-bottom: 15px;
-      text-shadow: 1px 1px 3px rgba(255, 69, 0, 0.7);
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
       user-select: none;
     }
 
@@ -68,355 +60,412 @@
     nav {
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 18px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       user-select: none;
     }
     nav button {
-      background: #ff8c00;
+      background: #3498db;
       color: white;
       border: none;
-      padding: 12px 26px;
+      padding: 12px 28px;
       border-radius: 30px;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(255, 140, 0, 0.6);
-      transition: all 0.25s ease;
+      box-shadow: 0 5px 20px rgba(52,152,219,0.6);
+      transition: all 0.3s ease;
       font-weight: 700;
       filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
     }
     nav button:hover {
-      background: #ffa500;
-      transform: scale(1.1);
-      box-shadow: 0 8px 25px rgba(255, 165, 0, 0.8);
+      background: #2980b9;
+      transform: scale(1.12);
+      box-shadow: 0 8px 28px rgba(41,128,185,0.9);
     }
     nav button.active {
-      background: #ff4500;
-      box-shadow: 0 10px 30px rgba(255, 69, 0, 0.9);
-      transform: scale(1.15);
+      background: #1abc9c;
+      box-shadow: 0 10px 30px rgba(26,188,156,0.95);
+      transform: scale(1.18);
     }
 
     /* Search Input */
     #search {
       display: block;
-      margin: 0 auto 25px auto;
-      padding: 15px 20px;
+      margin: 0 auto 30px auto;
+      padding: 15px 22px;
       width: 90%;
-      max-width: 400px;
-      font-size: 1.2rem;
-      border: 2px solid #ff8c00;
+      max-width: 450px;
+      font-size: 1.3rem;
+      border: 3px solid #1abc9c;
       border-radius: 50px;
       outline: none;
       transition: border-color 0.3s ease;
+      background: rgba(255 255 255 / 0.15);
+      color: #eee;
+      text-shadow: 0 0 3px #111;
     }
     #search:focus {
-      border-color: #ff4500;
-      box-shadow: 0 0 15px #ff4500;
+      border-color: #16a085;
+      box-shadow: 0 0 18px #16a085;
+      background: rgba(255 255 255 / 0.25);
+      color: #fff;
     }
 
     /* Sound Grid */
     .sound-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
       user-select: none;
     }
     .sound-button {
-      background: #ffd700;
-      border-radius: 20px;
-      padding: 18px 15px;
+      background: #1abc9c;
+      border-radius: 18px;
+      padding: 20px 15px;
       font-weight: 700;
-      color: #444;
+      color: #112;
       cursor: pointer;
-      box-shadow: 0 6px 12px rgba(255, 215, 0, 0.6);
+      box-shadow: 0 8px 18px rgba(26,188,156,0.6);
       position: relative;
-      transition: all 0.3s ease;
+      transition: all 0.35s cubic-bezier(0.2,0,0,1);
       font-size: 1rem;
+      text-align: center;
       user-select: none;
+      overflow: hidden;
     }
     .sound-button:hover {
-      background: #ffe600;
-      transform: translateY(-5px);
-      box-shadow: 0 12px 24px rgba(255, 230, 0, 0.9);
+      background: #16a085;
+      box-shadow: 0 14px 35px rgba(22,160,133,0.95);
+      transform: translateY(-7px);
+      color: #e0f7f5;
     }
     .sound-button.playing {
       animation: pulseGlow 1.3s infinite alternate;
-      color: #ff4500;
+      color: #0e3f3a;
       font-weight: 900;
+      box-shadow: 0 0 20px 4px #0e3f3a inset;
     }
-
     @keyframes pulseGlow {
       0% {
-        box-shadow: 0 0 12px 2px #ff4500;
+        box-shadow: 0 0 15px 3px #0e3f3a inset;
       }
       100% {
-        box-shadow: 0 0 25px 6px #ff4500;
+        box-shadow: 0 0 35px 10px #0e3f3a inset;
       }
     }
 
     /* Favorites Button */
     .fav-btn {
       position: absolute;
-      top: 8px;
-      right: 10px;
-      font-size: 18px;
+      top: 10px;
+      right: 12px;
+      font-size: 22px;
       background: transparent;
       border: none;
       cursor: pointer;
       user-select: none;
-      transition: transform 0.2s ease;
-      color: #aa4400;
-      text-shadow: 0 0 3px #ffc;
+      transition: transform 0.25s ease;
+      color: #1c2e2a;
+      text-shadow: 0 0 4px #d1f2eb;
+      outline-offset: 2px;
     }
     .fav-btn:hover {
-      transform: scale(1.2);
-      color: #ff4500;
-      text-shadow: 0 0 10px #ff4500;
+      transform: scale(1.25);
+      color: #16a085;
+      text-shadow: 0 0 12px #16a085;
     }
     .fav-btn.favorited {
-      color: #ff4500;
-      text-shadow: 0 0 12px #ff4500;
+      color: #16a085;
+      text-shadow: 0 0 20px #16a085;
     }
 
     /* Error Box */
     #error-box {
-      max-width: 400px;
-      margin: 15px auto 25px auto;
-      padding: 12px 18px;
-      background: #ff4c4c;
+      max-width: 460px;
+      margin: 15px auto 30px auto;
+      padding: 14px 22px;
+      background: #e74c3c;
       color: white;
       font-weight: 700;
-      border-radius: 12px;
+      border-radius: 15px;
       text-align: center;
       display: none;
       user-select: none;
-      box-shadow: 0 0 15px #ff4c4c;
+      box-shadow: 0 0 25px #e74c3c;
     }
 
     /* Settings Panel */
     #settings {
-      max-width: 500px;
+      max-width: 600px;
       margin: 0 auto 40px auto;
-      background: rgba(255,255,255,0.9);
-      padding: 25px 30px;
-      border-radius: 20px;
-      box-shadow: 0 6px 18px rgba(255, 140, 0, 0.6);
+      background: rgba(28, 46, 42, 0.95);
+      padding: 30px 36px;
+      border-radius: 30px;
+      box-shadow: 0 10px 28px rgba(22,160,133,0.85);
       user-select: none;
-      color: #444;
+      color: #d1f2eb;
       transition: background 0.4s ease, color 0.4s ease;
     }
     body.dark #settings {
-      background: rgba(34,34,34,0.85);
-      color: #eee;
-      box-shadow: 0 6px 25px rgba(255, 69, 0, 0.8);
+      background: rgba(40, 60, 55, 0.9);
+      color: #9de8d0;
+      box-shadow: 0 12px 35px rgba(26,188,156,0.9);
     }
     #settings label {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: 700;
-      margin: 15px 0;
-      font-size: 1.1rem;
+      margin: 18px 0;
+      font-size: 1.15rem;
       user-select: none;
     }
     #settings input[type=range] {
-      width: 150px;
+      width: 170px;
       cursor: pointer;
+      border-radius: 10px;
     }
     #settings input[type=number] {
-      width: 70px;
-      padding: 5px 8px;
-      border-radius: 8px;
-      border: 2px solid #ff8c00;
+      width: 80px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 2px solid #16a085;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.05rem;
       transition: border-color 0.3s ease;
       user-select: text;
+      background: rgba(255 255 255 / 0.1);
+      color: #c7f0e9;
+      text-align: center;
     }
     #settings input[type=number]:focus {
       outline: none;
-      border-color: #ff4500;
-      box-shadow: 0 0 10px #ff4500;
+      border-color: #1abc9c;
+      box-shadow: 0 0 12px #1abc9c;
+      background: rgba(255 255 255 / 0.15);
     }
     #settings input[type=checkbox] {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       cursor: pointer;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
     }
 
     /* Favorites List */
     #favorites-list {
       list-style: none;
       padding: 0;
-      margin: 0 auto 40px auto;
-      max-width: 900px;
+      margin: 0 auto 50px auto;
+      max-width: 1100px;
       display: grid;
-      grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+      gap: 22px;
       user-select: none;
     }
     #favorites-list li {
       list-style: none;
     }
 
-    /* Confetti Canvas */
-    #confetti-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
     /* Scrollbar styling */
     ::-webkit-scrollbar {
-      width: 12px;
+      width: 14px;
     }
     ::-webkit-scrollbar-track {
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: #ff8c00;
-      border-radius: 10px;
+      background: #16a085;
+      border-radius: 12px;
     }
     body.dark ::-webkit-scrollbar-thumb {
-      background: #ff4500;
+      background: #1abc9c;
     }
 
     /* Responsive */
-    @media (max-width: 600px) {
+    @media (max-width: 650px) {
       nav button {
-        padding: 10px 14px;
+        padding: 10px 18px;
         font-size: 1rem;
       }
       .sound-button {
         font-size: 0.9rem;
-        padding: 12px 10px;
+        padding: 14px 10px;
       }
-      #settings {
-        width: 90%;
-        padding: 20px 15px;
+      #settings label {
+        font-size: 1rem;
       }
+      #settings input[type=range] {
+        width: 130px;
+      }
+      #settings input[type=number] {
+        width: 60px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Audio Visualizer Top-Left */
+    #visualizer-container {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      width: 160px;
+      height: 90px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 15px;
+      padding: 10px 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+      user-select: none;
+      z-index: 20;
+    }
+    #visualizer-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 12px;
+      background: #111a;
+    }
+    body.dark #visualizer-container {
+      background: rgba(26,188,156,0.15);
+      box-shadow: 0 0 18px #16a085aa;
     }
   </style>
 </head>
 <body>
   <canvas id="particle-canvas"></canvas>
-  <canvas id="confetti-canvas"></canvas>
   <div id="app">
-    <h1>💨 Fart Soundboard Extravaganza Deluxe 💨</h1>
-    <nav>
-      <button class="tab-btn active" data-tab="all">All Sounds</button>
-      <button class="tab-btn" data-tab="reverb">Reverb Farts</button>
-      <button class="tab-btn" data-tab="meme">Meme Farts</button>
-      <button class="tab-btn" data-tab="favorites">Favorites ❤️</button>
-      <button class="tab-btn" data-tab="settings">Settings ⚙️</button>
+    <h1>Ultimate Soundboard Deluxe</h1>
+    <input
+      id="search"
+      type="search"
+      placeholder="Search sounds..."
+      aria-label="Search sounds"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <nav role="navigation" aria-label="Soundboard categories">
+      <button class="tab-btn active" data-tab="all">All</button>
+      <button class="tab-btn" data-tab="memes">Memes</button>
+      <button class="tab-btn" data-tab="movies">Movies</button>
+      <button class="tab-btn" data-tab="animals">Animals</button>
+      <button class="tab-btn" data-tab="farts">Farts</button>
+      <button class="tab-btn" data-tab="favorites">Favorites</button>
+      <button class="tab-btn" data-tab="settings">Settings</button>
     </nav>
-    <input type="text" id="search" placeholder="Search sounds..." autocomplete="off" spellcheck="false" />
+
     <div id="error-box"></div>
 
     <div id="all" class="tab-content sound-grid"></div>
-    <div id="reverb" class="tab-content sound-grid" style="display:none;"></div>
-    <div id="meme" class="tab-content sound-grid" style="display:none;"></div>
-    <ul id="favorites-list" class="tab-content" style="display:none;"></ul>
+    <div id="memes" class="tab-content sound-grid" style="display:none;"></div>
+    <div id="movies" class="tab-content sound-grid" style="display:none;"></div>
+    <div id="animals" class="tab-content sound-grid" style="display:none;"></div>
+    <div id="farts" class="tab-content sound-grid" style="display:none;"></div>
+
+    <div id="favorites" class="tab-content" style="display:none;">
+      <ul id="favorites-list"></ul>
+    </div>
+
     <section id="settings" class="tab-content" style="display:none;">
-      <label>
-        Volume
-        <input type="range" id="volume" min="0" max="1" step="0.05" value="1" />
-      </label>
-      <label>
-        Playback Speed
-        <input type="range" id="speed" min="0.5" max="2" step="0.05" value="1" />
-      </label>
-      <label>
-        Loop Playback
-        <input type="checkbox" id="loop" />
-      </label>
-      <label>
-        Allow Multi-Play
-        <input type="checkbox" id="multi-play" checked />
-      </label>
-      <label>
-        Auto-Play Interval (seconds, 0 to disable)
-        <input type="number" id="auto-interval" min="0" step="1" value="0" />
-      </label>
-      <label>
-        Dark Mode
-        <input type="checkbox" id="dark-mode" />
-      </label>
+      <label for="volume-control">Volume: <input type="range" id="volume-control" min="0" max="1" step="0.05" value="1" /></label>
+      <label for="speed-control">Speed: <input type="range" id="speed-control" min="0.25" max="3" step="0.05" value="1" /></label>
+      <label for="loop-control">Loop: <input type="checkbox" id="loop-control" /></label>
+      <label for="multi-play-control">Allow multi-play: <input type="checkbox" id="multi-play-control" checked /></label>
+      <label for="auto-interval-control">Auto-play interval (sec): <input type="number" id="auto-interval-control" min="0" step="1" value="0" /></label>
+      <label for="dark-mode-control">Dark mode: <input type="checkbox" id="dark-mode-control" /></label>
     </section>
+  </div>
+
+  <div id="visualizer-container" aria-label="Audio visualizer" role="img" aria-live="polite">
+    <canvas id="visualizer-canvas" width="160" height="90"></canvas>
   </div>
 
   <script>
     (() => {
-      // Sound data (excluded echo, tiktok, movie)
+      // --- SOUNDS DATA ---
+      // URLs from free sources or CDN, mostly short mp3 clips from public domain or CC0
       const sounds = [
-        { name: 'Dry Fart', url: 'https://www.myinstants.com/media/sounds/dry-fart.mp3', category: 'all' },
-        { name: 'Fart with Reverb', url: 'https://www.myinstants.com/media/sounds/fart-with-reverb.mp3', category: 'reverb' },
-        { name: 'Fart Bass Boosted', url: 'https://www.myinstants.com/media/sounds/fart-bass-boosted.mp3', category: 'reverb' },
-        { name: 'Fart with Extra Reverb', url: 'https://www.myinstants.com/media/sounds/fart-with-extra-reverb.mp3', category: 'reverb' },
-        { name: 'Quick Fart with Reverb', url: 'https://www.myinstants.com/media/sounds/quick-fart-with-reverb.mp3', category: 'reverb' },
-        { name: 'Squeak Fart with Reverb', url: 'https://www.myinstants.com/media/sounds/squeak-fart-with-reverb.mp3', category: 'reverb' },
-        { name: 'Fart Reverb Without Reverb', url: 'https://www.myinstants.com/media/sounds/fart-reverb-without-reverb.mp3', category: 'reverb' },
+        // Memes
+        { name: "Vine 'What are those?'", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/vine-what-are-those.mp3", category: "memes" },
+        { name: "Airhorn", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/airhorn.mp3", category: "memes" },
+        { name: "Sad Trombone", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/sad-trombone.mp3", category: "memes" },
+        { name: "Bruh Sound Effect", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/bruh.mp3", category: "memes" },
+        { name: "Record Scratch", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/record-scratch.mp3", category: "memes" },
+        { name: "Fart Noise", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/fart-1.mp3", category: "farts" },
+        { name: "Fart Wet", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/fart-wet.mp3", category: "farts" },
 
-        { name: 'Wet Fart Meme', url: 'https://www.myinstants.com/media/sounds/wet-fart-meme.mp3', category: 'meme' },
-        { name: 'Brain Fart Slowed', url: 'https://www.myinstants.com/media/sounds/brain-fart-slowed.mp3', category: 'meme' },
-        { name: 'Goofy Ahh Fart', url: 'https://www.myinstants.com/media/sounds/goofy-ahh-fart.mp3', category: 'meme' },
-        { name: 'Long Brain Fart', url: 'https://www.myinstants.com/media/sounds/long-brain-fart.mp3', category: 'meme' },
-        { name: 'Bowser Fart', url: 'https://www.myinstants.com/media/sounds/bowser-fart.mp3', category: 'meme' },
-        { name: 'Nicki Minaj Fart Remix', url: 'https://www.myinstants.com/media/sounds/nicki-minaj-fart-remix.mp3', category: 'meme' },
-        { name: 'Fart Meme Sound', url: 'https://www.myinstants.com/media/sounds/fart-meme-sound.mp3', category: 'meme' },
+        // Movies
+        { name: "Lightsaber Swing", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/lightsaber-swing.mp3", category: "movies" },
+        { name: "R2D2 Beep", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/r2d2-beep.mp3", category: "movies" },
+        { name: "Indiana Jones Whip", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/indy-whip.mp3", category: "movies" },
+        { name: "Jaws Theme", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/jaws-theme.mp3", category: "movies" },
 
-        { name: 'Mega Fart', url: 'https://www.myinstants.com/media/sounds/mega-fart.mp3', category: 'all' },
-        { name: 'Perfect Fart', url: 'https://www.myinstants.com/media/sounds/perfect-fart.mp3', category: 'all' },
-        { name: 'Fart Sound Effect 3', url: 'https://www.myinstants.com/media/sounds/fart-sound-effect-3.mp3', category: 'all' },
+        // Animals
+        { name: "Dog Bark", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/dog-bark.mp3", category: "animals" },
+        { name: "Cat Meow", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/cat-meow.mp3", category: "animals" },
+        { name: "Cow Moo", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/cow-moo.mp3", category: "animals" },
+        { name: "Lion Roar", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/lion-roar.mp3", category: "animals" },
+        { name: "Elephant Trumpet", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/elephant-trumpet.mp3", category: "animals" },
+
+        // Farts (few)
+        { name: "Classic Fart", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/classic-fart.mp3", category: "farts" },
+        { name: "Sneaky Fart", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/sneaky-fart.mp3", category: "farts" },
+        { name: "Squeaky Fart", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/squeaky-fart.mp3", category: "farts" },
+        { name: "Long Fart", url: "https://cdn.jsdelivr.net/gh/emulation12/sounds/long-fart.mp3", category: "farts" },
+
+        // Add more sounds here with diverse URLs or self-hosted ones if you want
       ];
 
-      // DOM refs
-      const tabs = document.querySelectorAll('.tab-btn');
-      const errorBox = document.getElementById('error-box');
+      // --- GLOBALS & DOM ---
+      const tabs = document.querySelectorAll('nav button.tab-btn');
+      const contents = document.querySelectorAll('.tab-content');
       const searchInput = document.getElementById('search');
-      const allContainer = document.getElementById('all');
-      const reverbContainer = document.getElementById('reverb');
-      const memeContainer = document.getElementById('meme');
-      const favoritesList = document.getElementById('favorites-list');
-      const settingsPanel = document.getElementById('settings');
-      const volumeControl = document.getElementById('volume');
-      const speedControl = document.getElementById('speed');
-      const loopControl = document.getElementById('loop');
-      const multiPlayControl = document.getElementById('multi-play');
-      const autoIntervalControl = document.getElementById('auto-interval');
-      const darkModeControl = document.getElementById('dark-mode');
+      const errorBox = document.getElementById('error-box');
 
-      let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      const allContainer = document.getElementById('all');
+      const memesContainer = document.getElementById('memes');
+      const moviesContainer = document.getElementById('movies');
+      const animalsContainer = document.getElementById('animals');
+      const fartsContainer = document.getElementById('farts');
+      const favoritesContainer = document.getElementById('favorites-list');
+
+      // Settings controls
+      const volumeControl = document.getElementById('volume-control');
+      const speedControl = document.getElementById('speed-control');
+      const loopControl = document.getElementById('loop-control');
+      const multiPlayControl = document.getElementById('multi-play-control');
+      const autoIntervalControl = document.getElementById('auto-interval-control');
+      const darkModeControl = document.getElementById('dark-mode-control');
+
+      // Audio
+      let audioContext = null;
+      let analyser = null;
+      let audioSource = null;
       let currentAudios = [];
       let autoPlayIntervalId = null;
 
-      // --- TAB NAVIGATION ---
+      // Favorites loaded from localStorage
+      let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+      // --- FUNCTIONS ---
+
+      // Tab switching
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
           tabs.forEach(t => t.classList.remove('active'));
           tab.classList.add('active');
-          document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+          contents.forEach(c => (c.style.display = 'none'));
+          const selected = document.getElementById(tab.dataset.tab);
+          if (selected) selected.style.display = 'grid' || 'block';
           if(tab.dataset.tab === 'favorites') {
             renderFavorites();
-            favoritesList.style.display = 'grid';
-          } else if(tab.dataset.tab === 'settings') {
-            settingsPanel.style.display = 'block';
-          } else {
-            document.getElementById(tab.dataset.tab).style.display = 'grid';
           }
-          errorBox.style.display = 'none';
-          searchInput.value = '';
-          renderSounds('');
+          if(tab.dataset.tab === 'settings') {
+            // nothing special
+          }
         });
       });
 
-      // --- RENDER SOUNDS ---
+      // Create sound button with favorite toggle
       function createSoundButton(sound) {
         const btn = document.createElement('button');
         btn.className = 'sound-button';
@@ -427,110 +476,172 @@
         // Favorite Button
         const favBtn = document.createElement('button');
         favBtn.className = 'fav-btn';
-        favBtn.innerHTML = favorites.includes(sound.url) ? '❤️' : '🤍';
-        if(favorites.includes(sound.url)) favBtn.classList.add('favorited');
-        favBtn.title = favorites.includes(sound.url) ? 'Remove from favorites' : 'Add to favorites';
+        const isFav = favorites.includes(sound.url);
+        favBtn.innerHTML = isFav ? '❤️' : '🤍';
+        if(isFav) favBtn.classList.add('favorited');
+        favBtn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
+
         favBtn.addEventListener('click', e => {
           e.stopPropagation();
           toggleFavorite(sound.url, favBtn);
         });
-        btn.appendChild(favBtn);
 
+        btn.appendChild(favBtn);
         btn.addEventListener('click', () => playSound(sound, btn));
         return btn;
       }
 
+      // Render all sounds filtered by search term
       function renderSounds(filter = '') {
-        [allContainer, reverbContainer, memeContainer].forEach(container => (container.innerHTML = ''));
+        [allContainer, memesContainer, moviesContainer, animalsContainer, fartsContainer].forEach(container => (container.innerHTML = ''));
+
+        // For "all", show every sound in the allContainer
         sounds.forEach(sound => {
-          if(!sound.name.toLowerCase().includes(filter.toLowerCase())) return;
-          if (allContainer && (sound.category === 'all' || sound.category === 'reverb' || sound.category === 'meme')) {
-            if(sound.category === 'all') allContainer.appendChild(createSoundButton(sound));
-            else if(sound.category === 'reverb') reverbContainer.appendChild(createSoundButton(sound));
-            else if(sound.category === 'meme') memeContainer.appendChild(createSoundButton(sound));
+          if (!sound.name.toLowerCase().includes(filter.toLowerCase())) return;
+          const btn = createSoundButton(sound);
+          // Add to allContainer always
+          allContainer.appendChild(btn);
+
+          // Add to category containers
+          switch(sound.category) {
+            case 'memes': memesContainer.appendChild(createSoundButton(sound)); break;
+            case 'movies': moviesContainer.appendChild(createSoundButton(sound)); break;
+            case 'animals': animalsContainer.appendChild(createSoundButton(sound)); break;
+            case 'farts': fartsContainer.appendChild(createSoundButton(sound)); break;
           }
         });
       }
 
-      // --- FAVORITES ---
+      // Render favorites tab
       function renderFavorites() {
-        favoritesList.innerHTML = '';
-        if(favorites.length === 0) {
-          const emptyMsg = document.createElement('p');
-          emptyMsg.textContent = "You don't have any favorites yet. Click ❤️ on a sound to add it here!";
-          emptyMsg.style.textAlign = 'center';
-          emptyMsg.style.fontStyle = 'italic';
-          emptyMsg.style.gridColumn = '1 / -1';
-          favoritesList.appendChild(emptyMsg);
+        favoritesContainer.innerHTML = '';
+        if (favorites.length === 0) {
+          const p = document.createElement('p');
+          p.textContent = "No favorites yet! Click the ❤️ on a sound to add it here.";
+          p.style.fontStyle = 'italic';
+          p.style.textAlign = 'center';
+          p.style.gridColumn = '1 / -1';
+          favoritesContainer.appendChild(p);
           return;
         }
         favorites.forEach(url => {
           const sound = sounds.find(s => s.url === url);
           if(sound) {
             const li = document.createElement('li');
-            const btn = createSoundButton(sound);
-            li.appendChild(btn);
-            favoritesList.appendChild(li);
+            li.appendChild(createSoundButton(sound));
+            favoritesContainer.appendChild(li);
           }
         });
       }
 
-      function toggleFavorite(url, btn) {
+      // Toggle favorite state & persist
+      function toggleFavorite(url, favBtn) {
         const idx = favorites.indexOf(url);
-        if(idx === -1) {
+        if (idx === -1) {
           favorites.push(url);
-          btn.textContent = '❤️';
-          btn.classList.add('favorited');
-          btn.title = 'Remove from favorites';
+          favBtn.innerHTML = '❤️';
+          favBtn.classList.add('favorited');
+          favBtn.title = 'Remove from favorites';
         } else {
           favorites.splice(idx, 1);
-          btn.textContent = '🤍';
-          btn.classList.remove('favorited');
-          btn.title = 'Add to favorites';
+          favBtn.innerHTML = '🤍';
+          favBtn.classList.remove('favorited');
+          favBtn.title = 'Add to favorites';
         }
         localStorage.setItem('favorites', JSON.stringify(favorites));
       }
 
-      // --- PLAY SOUND ---
+      // Play a sound with Web Audio and setup visualizer
       function playSound(sound, button) {
         errorBox.style.display = 'none';
 
-        if(!multiPlayControl.checked) {
-          currentAudios.forEach(aud => aud.pause());
-          currentAudios.length = 0;
+        if (!audioContext) {
+          audioContext = new AudioContext();
+          analyser = audioContext.createAnalyser();
+          analyser.fftSize = 256;
+          analyser.smoothingTimeConstant = 0.7;
         }
 
-        const audio = new Audio(sound.url);
-        audio.volume = parseFloat(volumeControl.value);
-        audio.playbackRate = parseFloat(speedControl.value);
-        audio.loop = loopControl.checked;
+        if (!multiPlayControl.checked) {
+          currentAudios.forEach(aud => {
+            try { aud.pause(); } catch { }
+          });
+          currentAudios.length = 0;
+          if (audioSource) audioSource.disconnect();
+        }
 
-        audio.play().then(() => {
-          if(button) {
-            button.classList.add('playing');
-            setTimeout(() => button.classList.remove('playing'), 1500);
-          }
-          launchConfetti();
-        }).catch(() => {
-          errorBox.textContent = `Failed to load audio: ${sound.name}`;
-          errorBox.style.display = 'block';
-        });
+        // Fetch and decode the audio buffer to connect to Web Audio API
+        fetch(sound.url)
+          .then(response => {
+            if (!response.ok) throw new Error("Network response was not ok");
+            return response.arrayBuffer();
+          })
+          .then(buffer => audioContext.decodeAudioData(buffer))
+          .then(decodedData => {
+            const source = audioContext.createBufferSource();
+            source.buffer = decodedData;
+            source.playbackRate.value = parseFloat(speedControl.value);
+            source.loop = loopControl.checked;
 
-        currentAudios.push(audio);
+            // Connect source -> analyser -> destination
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
 
-        audio.addEventListener('ended', () => {
-          const idx = currentAudios.indexOf(audio);
-          if(idx !== -1) currentAudios.splice(idx, 1);
-        });
+            source.start(0);
+
+            currentAudios.push(source);
+            audioSource = source;
+
+            if(button) {
+              button.classList.add('playing');
+              setTimeout(() => button.classList.remove('playing'), 1500);
+            }
+          })
+          .catch(() => {
+            errorBox.textContent = `Failed to load audio: ${sound.name}`;
+            errorBox.style.display = 'block';
+          });
       }
 
-      // --- SEARCH ---
+      // Audio Visualizer
+      const visualizerCanvas = document.getElementById('visualizer-canvas');
+      const visualizerCtx = visualizerCanvas.getContext('2d');
+      const visualizerWidth = visualizerCanvas.width;
+      const visualizerHeight = visualizerCanvas.height;
+
+      function drawVisualizer() {
+        if (!analyser) {
+          visualizerCtx.clearRect(0, 0, visualizerWidth, visualizerHeight);
+          requestAnimationFrame(drawVisualizer);
+          return;
+        }
+
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        analyser.getByteFrequencyData(dataArray);
+
+        visualizerCtx.clearRect(0, 0, visualizerWidth, visualizerHeight);
+        const barWidth = (visualizerWidth / bufferLength) * 2.5;
+        let x = 0;
+        for(let i = 0; i < bufferLength; i++) {
+          const barHeight = (dataArray[i] / 255) * visualizerHeight;
+          const r = 30 + (barHeight / visualizerHeight) * 200;
+          const g = 200 - (barHeight / visualizerHeight) * 180;
+          const b = 150;
+          visualizerCtx.fillStyle = `rgb(${r},${g},${b})`;
+          visualizerCtx.fillRect(x, visualizerHeight - barHeight, barWidth, barHeight);
+          x += barWidth + 1;
+        }
+
+        requestAnimationFrame(drawVisualizer);
+      }
+
+      // Search filtering event
       searchInput.addEventListener('input', e => {
-        const filter = e.target.value.trim();
-        renderSounds(filter);
+        renderSounds(e.target.value.trim());
       });
 
-      // --- SETTINGS PERSISTENCE ---
+      // Settings persistence
       function loadSettings() {
         const vol = localStorage.getItem('volume');
         if(vol !== null) volumeControl.value = vol;
@@ -562,7 +673,7 @@
         localStorage.setItem('darkMode', darkModeControl.checked);
       }
 
-      // --- DARK MODE ---
+      // Dark Mode toggle
       function updateDarkMode(enabled) {
         if(enabled) document.body.classList.add('dark');
         else document.body.classList.remove('dark');
@@ -572,109 +683,86 @@
         saveSettings();
       });
 
-      // --- SETTINGS EVENTS ---
+      // Settings event listeners
       volumeControl.addEventListener('input', saveSettings);
       speedControl.addEventListener('input', saveSettings);
       loopControl.addEventListener('change', saveSettings);
       multiPlayControl.addEventListener('change', saveSettings);
-      autoIntervalControl.addEventListener('input', () => {
-        saveSettings();
-        restartAutoPlay();
-      });
+      autoIntervalControl.addEventListener('input', saveSettings);
 
-      // --- AUTO PLAY ---
-      function restartAutoPlay() {
-        if(autoPlayIntervalId) {
-          clearInterval(autoPlayIntervalId);
-          autoPlayIntervalId = null;
-        }
-        const intervalSec = parseInt(autoIntervalControl.value);
-        if(intervalSec > 0) {
+      // Autoplay handler
+      function startAutoPlay() {
+        if (autoPlayIntervalId) clearInterval(autoPlayIntervalId);
+        const intervalSec = Number(autoIntervalControl.value);
+        if (intervalSec > 0) {
+          let index = 0;
           autoPlayIntervalId = setInterval(() => {
-            const allSounds = [...document.querySelectorAll('#all button.sound-button')];
-            if(allSounds.length === 0) return;
-            // Play random sound from current tab only:
-            const activeTab = [...tabs].find(t => t.classList.contains('active')).dataset.tab;
-            let candidates = [];
-            if(activeTab === 'all') candidates = allSounds;
-            else if(activeTab === 'reverb') candidates = [...document.querySelectorAll('#reverb button.sound-button')];
-            else if(activeTab === 'meme') candidates = [...document.querySelectorAll('#meme button.sound-button')];
-            else return;
-            if(candidates.length === 0) return;
-            const randBtn = candidates[Math.floor(Math.random() * candidates.length)];
-            randBtn.click();
+            if(sounds.length === 0) return;
+            const sound = sounds[index % sounds.length];
+            playSound(sound);
+            index++;
           }, intervalSec * 1000);
         }
       }
+      autoIntervalControl.addEventListener('change', () => {
+        startAutoPlay();
+        saveSettings();
+      });
 
-      // --- PARTICLES BACKGROUND ---
+      // PARTICLES BACKGROUND
+
       const canvas = document.getElementById('particle-canvas');
       const ctx = canvas.getContext('2d');
-      let width, height;
-      const particles = [];
-      const particleCount = 90;
-      const maxDistance = 120;
+      let w, h;
+      let particles = [];
+      const PARTICLE_COUNT = 90;
+      const MAX_DISTANCE = 130;
 
-      function randomRange(min, max) {
-        return Math.random() * (max - min) + min;
+      function initCanvas() {
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w;
+        canvas.height = h;
       }
 
-      function createParticles() {
-        particles.length = 0;
-        for(let i = 0; i < particleCount; i++) {
-          particles.push({
-            x: randomRange(0, width),
-            y: randomRange(0, height),
-            vx: randomRange(-0.3, 0.3),
-            vy: randomRange(-0.3, 0.3),
-            size: randomRange(1, 3),
-          });
+      class Particle {
+        constructor() {
+          this.x = Math.random() * w;
+          this.y = Math.random() * h;
+          this.vx = (Math.random() - 0.5) * 0.8;
+          this.vy = (Math.random() - 0.5) * 0.8;
+          this.radius = 2.3 + Math.random() * 1.7;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+
+          if (this.x < 0 || this.x > w) this.vx *= -1;
+          if (this.y < 0 || this.y > h) this.vy *= -1;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+          ctx.shadowBlur = 3;
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
 
-      function resizeCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width * devicePixelRatio;
-        canvas.height = height * devicePixelRatio;
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(devicePixelRatio, devicePixelRatio);
-      }
-
-      function drawParticles() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = 'rgba(255, 140, 0, 0.9)';
-        ctx.strokeStyle = 'rgba(255, 140, 0, 0.35)';
-        ctx.lineWidth = 1;
-
-        // Move particles
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          if(p.x < 0 || p.x > width) p.vx *= -1;
-          if(p.y < 0 || p.y > height) p.vy *= -1;
-        });
-
-        // Draw particles
-        particles.forEach(p => {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-        });
-
-        // Draw connections
-        for(let i = 0; i < particles.length; i++) {
-          for(let j = i + 1; j < particles.length; j++) {
+      function connectParticles() {
+        for(let i=0; i < particles.length; i++) {
+          for(let j=i+1; j < particles.length; j++) {
             const p1 = particles[i];
             const p2 = particles[j];
             const dx = p1.x - p2.x;
             const dy = p1.y - p2.y;
             const dist = Math.sqrt(dx*dx + dy*dy);
-            if(dist < maxDistance) {
+
+            if(dist < MAX_DISTANCE) {
               ctx.beginPath();
-              ctx.strokeStyle = `rgba(255,140,0,${1 - dist / maxDistance})`;
+              ctx.strokeStyle = `rgba(255, 255, 255, ${(MAX_DISTANCE - dist) / MAX_DISTANCE * 0.3})`;
+              ctx.lineWidth = 1.2;
               ctx.moveTo(p1.x, p1.y);
               ctx.lineTo(p2.x, p2.y);
               ctx.stroke();
@@ -684,117 +772,39 @@
       }
 
       function animateParticles() {
-        drawParticles();
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        connectParticles();
         requestAnimationFrame(animateParticles);
       }
 
-      // --- CONFETTI ---
-      const confettiCanvas = document.getElementById('confetti-canvas');
-      const confettiCtx = confettiCanvas.getContext('2d');
-      let confettiParticles = [];
-      const confettiColors = ['#ff4500','#ffa500','#ffd700','#ff6347','#ff8c00'];
-      const confettiCount = 80;
-
-      class ConfettiParticle {
-        constructor() {
-          this.reset();
-        }
-        reset() {
-          this.x = Math.random() * confettiCanvas.width;
-          this.y = Math.random() * confettiCanvas.height - confettiCanvas.height;
-          this.size = (Math.random() * 6) + 4;
-          this.color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
-          this.speed = Math.random() * 2 + 1;
-          this.tilt = Math.random() * 10 - 10;
-          this.tiltSpeed = Math.random() * 0.1 + 0.05;
-          this.opacity = 1;
-          this.drift = (Math.random() * 2) - 1;
-        }
-        update() {
-          this.y += this.speed;
-          this.x += this.drift;
-          this.tilt += this.tiltSpeed;
-          if(this.y > confettiCanvas.height) this.reset();
-        }
-        draw(ctx) {
-          ctx.beginPath();
-          ctx.lineWidth = this.size / 2;
-          ctx.strokeStyle = this.color;
-          ctx.moveTo(this.x + this.tilt, this.y);
-          ctx.lineTo(this.x, this.y + this.tilt + (this.size / 2));
-          ctx.stroke();
-        }
-      }
-
-      function initConfetti() {
-        confettiParticles = [];
-        for(let i = 0; i < confettiCount; i++) {
-          confettiParticles.push(new ConfettiParticle());
-        }
-      }
-
-      function resizeConfetti() {
-        confettiCanvas.width = window.innerWidth * devicePixelRatio;
-        confettiCanvas.height = window.innerHeight * devicePixelRatio;
-        confettiCanvas.style.width = window.innerWidth + 'px';
-        confettiCanvas.style.height = window.innerHeight + 'px';
-        confettiCtx.setTransform(1, 0, 0, 1, 0, 0);
-        confettiCtx.scale(devicePixelRatio, devicePixelRatio);
-      }
-
-      function drawConfetti() {
-        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        confettiParticles.forEach(p => {
-          p.update();
-          p.draw(confettiCtx);
-        });
-      }
-
-      function animateConfetti() {
-        drawConfetti();
-        requestAnimationFrame(animateConfetti);
-      }
-
-      function launchConfetti() {
-        // Start confetti for ~2 seconds
-        confettiActive = true;
-        confettiTimeout && clearTimeout(confettiTimeout);
-        confettiTimeout = setTimeout(() => { confettiActive = false; }, 2000);
-      }
-
-      let confettiActive = false;
-      let confettiTimeout = null;
-
-      function confettiLoop() {
-        if(confettiActive) {
-          animateConfetti();
-        } else {
-          confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        }
-        requestAnimationFrame(confettiLoop);
-      }
-
-      // --- INIT ---
-      function init() {
-        resizeCanvas();
-        createParticles();
-        animateParticles();
-
-        resizeConfetti();
-        initConfetti();
-        confettiLoop();
-
-        loadSettings();
-        renderSounds();
-        restartAutoPlay();
-      }
-
       window.addEventListener('resize', () => {
-        resizeCanvas();
-        resizeConfetti();
+        initCanvas();
+        particles = [];
+        for(let i=0; i < PARTICLE_COUNT; i++) {
+          particles.push(new Particle());
+        }
       });
 
-      init();
+      // Initialize everything
+      function init() {
+        initCanvas();
+        for(let i=0; i < PARTICLE_COUNT; i++) {
+          particles.push(new Particle());
+        }
+        animateParticles();
+        loadSettings();
+        renderSounds();
+        startAutoPlay();
+        drawVisualizer();
+      }
+
+      // Kick off init
+      window.onload = init;
+
     })();
   </script>
 </body>
