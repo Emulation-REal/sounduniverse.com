@@ -3,618 +3,194 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Epic Soundboard Universe V3</title>
-  <link rel="manifest" href="manifest.json">
+  <title>Fart Soundboard Extravaganza</title>
   <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #1e3c72, #2a5298); margin: 0; padding: 20px; transition: all 0.5s ease; color: #fff; overflow-x: hidden; position: relative; }
-    body.light { background: linear-gradient(135deg, #f5f7fa, #c3cfe2); color: #333; }
-    body.dark { background: linear-gradient(135deg, #000, #333); color: #ddd; }
-    body.neon { background: linear-gradient(135deg, #ff00ff, #00ffff); color: #000; text-shadow: 0 0 10px #fff; }
-    body.custom { background: var(--custom-bg); color: var(--custom-color); }
-    h1 { text-align: center; color: #ffd700; text-shadow: 0 0 15px #ff4500, 0 0 25px #ff4500; font-size: 2.5em; margin-bottom: 10px; animation: glow-title 2s infinite; }
-    @keyframes glow-title { 0% { text-shadow: 0 0 10px #ff4500; } 50% { text-shadow: 0 0 20px #ffd700; } 100% { text-shadow: 0 0 10px #ff4500; } }
-    nav { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
-    nav button { padding: 12px 25px; margin: 5px; background: linear-gradient(45deg, #ff8c00, #ffd700); border: none; color: #fff; cursor: pointer; border-radius: 8px; transition: all 0.3s; box-shadow: 0 4px 8px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
-    nav button::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: #ff4500; transform: scaleX(0); transition: transform 0.3s; }
-    nav button:hover::after { transform: scaleX(1); }
-    nav button:hover { transform: rotate(2deg) scale(1.05); box-shadow: 0 8px 16px rgba(255,69,0,0.5); }
-    nav button.active { background: linear-gradient(45deg, #ff4500, #ff8c00); transform: scale(1.1); box-shadow: 0 0 20px #ffd700; }
-    #search { width: 80%; max-width: 500px; margin: 10px auto; display: block; padding: 12px; border-radius: 10px; border: 2px solid #ffd700; background: rgba(255,255,255,0.1); color: inherit; transition: border 0.3s; }
-    #search:focus { border: 2px solid #ff4500; box-shadow: 0 0 10px #ff4500; }
-    .sound-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); min-height: 400px; }
-    .pagination { text-align: center; margin: 10px; }
-    .pagination button { padding: 10px 20px; background: #ff8c00; border: none; color: white; cursor: pointer; margin: 5px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-    .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .sound-button { padding: 20px; background: linear-gradient(135deg, #ffd700, #ff8c00, #ff4500); border: none; color: #333; font-weight: bold; cursor: pointer; border-radius: 15px; box-shadow: 0 6px 12px rgba(0,0,0,0.3), inset 0 0 10px rgba(255,255,255,0.5), 0 0 5px #ff4500; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); position: relative; overflow: hidden; transform-style: preserve-3d; perspective: 1000px; -webkit-box-reflect: below 0px linear-gradient(transparent, rgba(0,0,0,0.2)); font-size: 1.2em; text-transform: uppercase; }
-    .sound-button::before { content: ''; position: absolute; top: -100%; left: -100%; width: 300%; height: 300%; background: radial-gradient(circle, rgba(255,255,255,0.7), transparent); transform: rotate(45deg); transition: all 0.5s; opacity: 0; }
-    .sound-button:hover::before { top: 0; left: 0; opacity: 1; }
-    .sound-button:hover { transform: rotateX(15deg) rotateY(15deg) scale(1.15); box-shadow: 0 15px 30px rgba(255,69,0,0.8); background: linear-gradient(135deg, #ffe600, #ffa500, #ff0000); color: #fff; text-shadow: 0 0 10px #000; }
-    .sound-button.playing { animation: pulse 1s infinite, glow 1s infinite, rainbow 3s infinite linear, flip 0.5s; }
-    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-    @keyframes glow { 0% { box-shadow: 0 0 10px #ff4500, 0 0 20px #ffd700; } 50% { box-shadow: 0 0 20px #ff4500, 0 0 30px #ffd700; } 100% { box-shadow: 0 0 10px #ff4500, 0 0 20px #ffd700; } }
-    @keyframes rainbow { 0% { background: linear-gradient(135deg, #ff0000, #ff8c00); } 20% { background: linear-gradient(135deg, #ff8c00, #ffd700); } 40% { background: linear-gradient(135deg, #ffd700, #00ff00); } 60% { background: linear-gradient(135deg, #00ff00, #00ffff); } 80% { background: linear-gradient(135deg, #00ffff, #ff00ff); } 100% { background: linear-gradient(135deg, #ff00ff, #ff0000); } }
-    @keyframes flip { 0% { transform: rotateY(0deg); } 50% { transform: rotateY(180deg); } 100% { transform: rotateY(360deg); } }
-    .sound-button span.icon { display: block; font-size: 2em; margin-bottom: 10px; transition: transform 0.3s; }
-    .sound-button:hover span.icon { transform: scale(1.3) rotate(15deg); }
-    .sound-button .tooltip { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: linear-gradient(45deg, #ff4500, #ffd700); color: #fff; padding: 8px 15px; border-radius: 8px; opacity: 0; transition: opacity 0.3s, transform 0.3s; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 0.9em; }
-    .sound-button:hover .tooltip { opacity: 1; transform: translateX(-50%) translateY(-10px); }
-    .sound-button .play-count { position: absolute; top: 5px; left: 5px; background: rgba(255,255,255,0.5); padding: 3px 8px; border-radius: 5px; font-size: 0.8em; }
-    .sound-button .rating { position: absolute; bottom: 5px; left: 5px; color: #ffd700; font-size: 0.8em; }
-    .waveform { display: flex; justify-content: center; align-items: center; height: 30px; margin-top: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 5px; box-shadow: inset 0 0 5px #000; }
-    .wave-bar { width: 8px; height: 15px; background: linear-gradient(#ff4500, #ffd700); margin: 0 4px; animation: wave 1.5s infinite ease-in-out; box-shadow: 0 0 5px #ff4500, 0 0 10px #ffd700; border-radius: 4px; }
-    .wave-bar:nth-child(2) { animation-delay: 0.3s; }
-    .wave-bar:nth-child(3) { animation-delay: 0.6s; }
-    @keyframes wave { 0%, 100% { height: 15px; transform: skew(0); } 50% { height: 30px; transform: skew(10deg); } }
-    #settings { background: rgba(255,255,255,0.2); padding: 30px; border-radius: 15px; margin: 20px auto; max-width: 800px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); backdrop-filter: blur(10px); }
-    #settings label { display: block; margin: 15px 0; font-size: 1.2em; }
-    #settings input[type="range"] { width: 100%; accent-color: #ff4500; background: linear-gradient(to right, #ff4500, #ffd700); border-radius: 5px; }
-    #favorites-list, #playlist, #achievements { list-style: none; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; margin: 10px 0; }
-    #achievements li { padding: 10px; background: rgba(255,255,255,0.1); margin: 5px 0; border-radius: 5px; }
-    canvas#background-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-    canvas#trail-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; pointer-events: none; }
-    #visualizer { position: fixed; top: 10px; left: 10px; width: 200px; height: 100px; background: rgba(0,0,0,0.7); border-radius: 12px; box-shadow: 0 0 20px #ff4500; padding: 15px; z-index: 10; }
-    #visualizer-canvas { width: 100%; height: 100%; }
-    #upload, #import-sounds { margin: 20px auto; display: block; padding: 10px; background: #ff8c00; color: white; border: none; border-radius: 8px; cursor: pointer; }
-    #theme-select, #custom-bg, #custom-color { padding: 10px; border-radius: 5px; background: #ffd700; color: #333; }
-    #score { position: fixed; top: 10px; right: 10px; background: #ff4500; padding: 10px 20px; border-radius: 10px; color: #fff; box-shadow: 0 0 15px #ffd700; font-size: 1.2em; }
-    #ai-tab { padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px; }
-    #ai-input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 2px solid #ffd700; }
-    #speak-btn, #export-playlist, #social-login { padding: 10px 20px; background: linear-gradient(45deg, #ff8c00, #ffd700); border: none; color: white; cursor: pointer; border-radius: 8px; margin: 10px; }
-    .tab-content { position: relative; }
-    .tab-content::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; opacity: 0.15; z-index: -1; }
-    #all::before { background-image: url('https://example.com/all-video.mp4'); }
-    #farts::before { background-image: url('https://example.com/fart-video.mp4'); }
-    #memes::before { background-image: url('https://example.com/meme-video.mp4'); }
-    /* Add similar for other categories with placeholder video URLs */
-    .error-message { background: #ff4500; color: white; padding: 10px; border-radius: 5px; margin: 10px auto; max-width: 500px; text-align: center; }
-    a-scene { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; }
-    a-entity { cursor: pointer; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #111; color: #fff; text-align: center; }
+    body.dark { background: linear-gradient(to bottom, #333, #111); color: #fff; }
+    h1 { padding: 1rem; color: #ff4500; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    nav { margin: 1rem 0; }
+    .tab-btn { background-color: #333; color: #fff; border: none; padding: 0.5rem 1rem; cursor: pointer; border-radius: 5px; margin: 0 0.25rem; }
+    .tab-btn.active { background-color: #555; }
+    .sound-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding: 1rem; }
+    .sound-card { background: #272727; border-radius: 10px; width: 150px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 10px; }
+    .sound-title { font-size: 14px; margin-bottom: 8px; }
+    .sound-play { background: #ffb400; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+    .fav-toggle { position: absolute; top: 6px; right: 8px; background: transparent; border: none; color: #ff6b6b; font-size: 16px; cursor: pointer; }
+    #search { margin: 0.5rem 0; padding: 0.5rem; width: 80%; max-width: 400px; border-radius: 5px; border: none; }
+    #settings label { display: block; margin: 0.5rem 0; }
+    canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
+    footer { padding: 12px; color: #999; font-size: 13px; }
+    @media (max-width: 480px) { .sound-card { width: 120px; height: 110px; } }
   </style>
 </head>
-<body class="dark">
-  <h1>Epic Soundboard Universe V3</h1>
-  <div id="score">Score: 0 | Combo: 0</div>
-  <input type="text" id="search" placeholder="Search across all sounds...">
-  <nav id="tabs"></nav>
-  <div id="tab-contents"></div>
-  <input type="file" id="upload" accept="audio/*" multiple>
-  <input type="file" id="import-sounds" accept=".json">
-  <canvas id="background-canvas"></canvas>
-  <canvas id="trail-canvas"></canvas>
-  <div id="visualizer"><canvas id="visualizer-canvas"></canvas></div>
-  <a-scene>
-    <a-entity position="0 1.6 -3">
-      <a-plane id="vr-controls" color="#ff4500" width="2" height="1" material="opacity: 0.5" text="value: Soundboard VR; color: white; align: center"></a-plane>
-    </a-entity>
-  </a-scene>
+<body>
+  <h1>💨 Fart Soundboard Extravaganza 💨</h1>
+  <input type="text" id="search" placeholder="Search sounds...">
+  <nav>
+    <button class="tab-btn active" data-tab="all">All</button>
+    <button class="tab-btn" data-tab="reverb">Reverb</button>
+    <button class="tab-btn" data-tab="meme">Meme</button>
+    <button class="tab-btn" data-tab="favorites">Favorites</button>
+    <button class="tab-btn" data-tab="settings">Settings</button>
+  </nav>
 
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <div id="all" class="tab-content sound-grid" aria-live="polite"></div>
+  <div id="reverb" class="tab-content sound-grid" style="display:none"></div>
+  <div id="meme" class="tab-content sound-grid" style="display:none"></div>
+  <div id="favorites" class="tab-content" style="display:none">
+    <div id="favorites-list" class="sound-grid"></div>
+  </div>
+  <div id="settings" class="tab-content" style="display:none; padding: 1rem;">
+    <label>Volume: <input type="range" id="volume" min="0" max="1" step="0.01" value="1"></label>
+    <label>Speed: <input type="range" id="speed" min="0.5" max="2" step="0.01" value="1"></label>
+    <label>Loop: <input type="checkbox" id="loop"></label>
+    <label>Auto-play interval (sec, 0 to disable): <input type="number" id="auto-interval" min="0" value="0"></label>
+    <label>Allow multi-play: <input type="checkbox" id="multi-play" checked></label>
+    <label>Dark mode: <input type="checkbox" id="dark-mode"></label>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+  <footer>Put your .mp3 files in a <code>/sounds/</code> folder and name them exactly as listed.</footer>
+
   <script>
-    // Sound list (curated to avoid CORS issues; expand with local hosting if needed)
-    const baseUrl = 'https://www.myinstants.com/media/sounds/';
     const sounds = [
-      { name: 'Dry Fart', url: `${baseUrl}dry-fart.mp3`, category: 'farts', icon: '💨' },
-      { name: 'Fart with Reverb', url: `${baseUrl}fart-with-reverb.mp3`, category: 'farts', icon: '💨' },
-      { name: 'Bruh Sound', url: `${baseUrl}bruh.mp3`, category: 'memes', icon: '😆' },
-      { name: 'Roblox Oof', url: `${baseUrl}oof.mp3`, category: 'memes', icon: '😆' },
-      { name: 'Vine Boom', url: `${baseUrl}vine-boom.mp3`, category: 'memes', icon: '😆' },
-      { name: 'Explosion', url: `${baseUrl}explosion.mp3`, category: 'sound-effects', icon: '💥' },
-      { name: 'Cat Meow', url: `${baseUrl}cat-meow.mp3`, category: 'animals', icon: '🐱' },
-      { name: 'Mario Jump', url: `${baseUrl}mario-jump.mp3`, category: 'games', icon: '🎮' },
-      { name: 'Naruto Rasengan', url: `${baseUrl}naruto-rasengan.mp3`, category: 'anime', icon: '🥷' },
-      { name: 'Star Wars Lightsaber', url: `${baseUrl}star-wars-lightsaber.mp3`, category: 'movies', icon: '⚔️' },
-      { name: 'Guitar Riff', url: `${baseUrl}guitar-riff.mp3`, category: 'music', icon: '🎸' },
-      { name: 'Ocean Waves', url: `${baseUrl}ocean-waves.mp3`, category: 'nature', icon: '🌊' },
-      { name: 'Car Engine', url: `${baseUrl}car-engine.mp3`, category: 'vehicles', icon: '🚗' },
-      { name: 'Scream', url: `${baseUrl}scream.mp3`, category: 'horror', icon: '😱' },
-      { name: 'Basketball Bounce', url: `${baseUrl}basketball-bounce.mp3`, category: 'sports', icon: '🏀' },
-      { name: 'Eating Crunch', url: `${baseUrl}eating-crunch.mp3`, category: 'food', icon: '🍽️' },
-      { name: 'Keyboard Typing', url: `${baseUrl}keyboard-typing.mp3`, category: 'technology', icon: '⌨️' },
-      { name: 'Rick Roll', url: `${baseUrl}rick-roll.mp3`, category: 'viral', icon: '🌟' },
-      // Expand with 300+ sounds (simulated for brevity; add more from myinstants.com or local files)
+      { name: 'Dry Fart', url: 'sounds/dry-fart.mp3', category: 'all' },
+      { name: 'Fart with Reverb', url: 'sounds/fart-with-reverb.mp3', category: 'reverb' },
+      { name: 'Fart Echo', url: 'sounds/fart-echo.mp3', category: 'reverb' },
+      { name: 'Wet Fart Meme', url: 'sounds/wet-fart-meme.mp3', category: 'meme' },
+      { name: 'Tiktok Fart Sound', url: 'sounds/tiktok-fart-sound.mp3', category: 'meme' },
+      { name: 'Movie Fart', url: 'sounds/movie-fart.mp3', category: 'meme' },
+      { name: 'Fart Bass Boosted', url: 'sounds/fart-bass-boosted.mp3', category: 'reverb' },
+      { name: 'Brain Fart Slowed', url: 'sounds/brain-fart-slowed.mp3', category: 'meme' },
+      { name: 'Goofy Ahh Fart', url: 'sounds/goofy-ahh-fart.mp3', category: 'meme' },
+      { name: 'Mega Fart', url: 'sounds/mega-fart.mp3', category: 'all' },
+      { name: 'Fart with Extra Reverb', url: 'sounds/fart-with-extra-reverb.mp3', category: 'reverb' },
+      { name: 'Quick Fart with Reverb', url: 'sounds/quick-fart-with-reverb.mp3', category: 'reverb' },
+      { name: 'Perfect Fart', url: 'sounds/perfect-fart.mp3', category: 'all' },
+      { name: 'Long Brain Fart', url: 'sounds/long-brain-fart.mp3', category: 'meme' },
+      { name: 'Bowser Fart', url: 'sounds/bowser-fart.mp3', category: 'meme' },
+      { name: 'Squeak Fart with Reverb', url: 'sounds/squeak-fart-with-reverb.mp3', category: 'reverb' },
+      { name: 'Fart Sound Effect 3', url: 'sounds/fart-sound-effect-3.mp3', category: 'all' },
+      { name: 'Fart Reverb Without Reverb', url: 'sounds/fart-reverb-without-reverb.mp3', category: 'reverb' },
+      { name: 'Nicki Minaj Fart Remix', url: 'sounds/nicki-minaj-fart-remix.mp3', category: 'meme' },
+      { name: 'Fart Meme Sound', url: 'sounds/fart-meme-sound.mp3', category: 'meme' }
     ];
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const analyzer = audioCtx.createAnalyser();
-    analyzer.fftSize = 256;
-    const bufferLength = analyzer.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-    const currentAudios = [];
-    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    let playlist = [];
-    let uploadedSounds = [];
-    let score = 0;
-    let combo = 0;
-    let lastPlayTime = 0;
-    let pageSize = 20;
-    let currentPages = {};
-    let achievements = JSON.parse(localStorage.getItem('achievements')) || [];
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    const searchInput = document.getElementById('search');
+    const volumeInput = document.getElementById('volume');
+    const speedInput = document.getElementById('speed');
+    const loopInput = document.getElementById('loop');
+    const multiPlayInput = document.getElementById('multi-play');
+    const autoIntervalInput = document.getElementById('auto-interval');
+    const darkModeInput = document.getElementById('dark-mode');
+    const favoritesKey = 'fart_favorites_v1';
+    let favorites = JSON.parse(localStorage.getItem(favoritesKey) || '[]');
+    let currentAudios = [];
+    let autoIntervalId = null;
 
-    function showError(message) {
-      const err = document.createElement('div');
-      err.className = 'error-message';
-      err.textContent = message;
-      document.body.appendChild(err);
-      setTimeout(() => err.remove(), 5000);
+    function ensureCanvasSize() {
+      const canvas = document.getElementById('confetti-canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
 
-    function createButton(sound, container) {
-      const btn = document.createElement('button');
-      btn.classList.add('sound-button');
-      btn.innerHTML = `<span class="icon">${sound.icon || '🔊'}</span>${sound.name}<span class="tooltip">Play ${sound.name} (0s, ★★★★★)</span><div class="play-count">Plays: 0</div><div class="rating">★★★★★</div><div class="waveform"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>`;
-      let plays = 0;
-      btn.addEventListener('click', () => {
-        playSound(sound, btn);
-        plays++;
-        btn.querySelector('.play-count').textContent = `Plays: ${plays}`;
-        localStorage.setItem('plays_' + sound.name, plays);
-        addToPlaylist(sound);
-        if ('vibrate' in navigator) navigator.vibrate(50); // Haptic feedback
-        checkAchievements();
-      });
-      const favBtn = document.createElement('button');
-      favBtn.textContent = favorites.includes(sound.name) ? '❤️' : '♡';
-      favBtn.style.position = 'absolute'; favBtn.style.top = '10px'; favBtn.style.right = '10px'; favBtn.style.background = 'transparent'; favBtn.style.border = 'none'; favBtn.style.fontSize = '1.5em'; favBtn.style.cursor = 'pointer';
-      favBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFavorite(sound.name, favBtn); });
-      btn.appendChild(favBtn);
-      const shareBtn = document.createElement('button');
-      shareBtn.textContent = '📤';
-      shareBtn.style.position = 'absolute'; shareBtn.style.bottom = '10px'; shareBtn.style.right = '10px'; shareBtn.style.background = 'transparent'; shareBtn.style.border = 'none'; shareBtn.style.cursor = 'pointer';
-      shareBtn.addEventListener('click', (e) => { e.stopPropagation(); navigator.share({ url: sound.url, title: sound.name }); });
-      btn.appendChild(shareBtn);
-      container.appendChild(btn);
-    }
+    window.addEventListener('resize', ensureCanvasSize);
+    ensureCanvasSize();
 
-    function playSound(sound, btn) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const audio = new Audio(sound.url);
-      audio.preload = 'auto';
-      audio.onerror = () => showError(`Failed to load ${sound.name}. Try hosting locally.`);
-      const source = audioCtx.createMediaElementSource(audio);
-      source.connect(analyzer);
-      analyzer.connect(audioCtx.destination);
-      audio.volume = document.getElementById('volume')?.value || 1;
-      audio.playbackRate = document.getElementById('speed')?.value || 1;
-      audio.loop = document.getElementById('loop')?.checked || false;
-      audio.play().catch(e => showError(`Error playing ${sound.name}: ${e.message}`));
-      currentAudios.push(audio);
-      btn.classList.add('playing');
-      audio.onended = () => { btn.classList.remove('playing'); playNextInPlaylist(); };
-      const now = Date.now();
-      if (now - lastPlayTime < 2000) combo++; else combo = 1;
-      score += combo * 10;
-      lastPlayTime = now;
-      updateScore();
-      visualizeAudio();
-    }
-
-    function visualizeAudio() {
-      const canvas = document.getElementById('visualizer-canvas');
+    function confetti() {
+      const canvas = document.getElementById('confetti-canvas');
       const ctx = canvas.getContext('2d');
-      canvas.width = 200;
-      canvas.height = 100;
+      const particles = [];
+      for (let i = 0; i < 40; i++) {
+        particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height * 0.5, r: Math.random() * 8 + 4, vx: Math.random() * 6 - 3, vy: Math.random() * 6 - 3, color: `hsl(${Math.random()*360},80%,60%)` });
+      }
       function draw() {
-        requestAnimationFrame(draw);
-        analyzer.getByteFrequencyData(dataArray);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const barWidth = (canvas.width / 8) - 5;
-        for (let i = 0; i < 8; i++) {
-          const barHeight = (dataArray[i] / 255) * canvas.height;
-          ctx.fillStyle = `hsl(${barHeight * 2}, 100%, 50%)`;
-          ctx.fillRect(i * (barWidth + 5), canvas.height - barHeight, barWidth, barHeight);
-          ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.moveTo(i * (barWidth + 5) + barWidth / 2, canvas.height);
-          ctx.lineTo(i * (barWidth + 5) + barWidth / 2, canvas.height - barHeight);
-          ctx.stroke();
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        let alive = false;
+        for (const p of particles) {
+          if (p.r > 0.5) alive = true;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle = p.color; ctx.fill();
+          p.x += p.vx; p.y += p.vy; p.r *= 0.96;
         }
+        if (alive) requestAnimationFrame(draw); else ctx.clearRect(0,0,canvas.width,canvas.height);
       }
       draw();
     }
 
-    function toggleFavorite(name, btn) {
-      if (favorites.includes(name)) {
-        favorites = favorites.filter(f => f !== name);
-        btn.textContent = '♡';
-      } else {
-        favorites.push(name);
-        btn.textContent = '❤️';
+    function playSound(sound) {
+      if (!multiPlayInput.checked) {
+        currentAudios.forEach(a => { try { a.pause(); a.currentTime = 0; } catch(e) {} });
+        currentAudios = [];
       }
-      localStorage.setItem('favorites', JSON.stringify(favorites));
+      const audio = new Audio(sound.url);
+      audio.crossOrigin = 'anonymous';
+      audio.volume = Number(volumeInput.value);
+      audio.playbackRate = Number(speedInput.value);
+      audio.loop = loopInput.checked;
+      audio.addEventListener('error', () => { alert('Failed to load audio: ' + sound.url); });
+      audio.play().catch(() => {});
+      currentAudios.push(audio);
+      confetti();
+    }
+
+    function toggleFavorite(name) {
+      if (favorites.includes(name)) favorites = favorites.filter(x => x !== name); else favorites.push(name);
+      localStorage.setItem(favoritesKey, JSON.stringify(favorites));
       renderFavorites();
+      renderSounds(searchInput.value);
     }
 
-    function addToPlaylist(sound) {
-      if (document.getElementById('playlist-check')?.checked) playlist.push(sound);
-      renderPlaylist();
+    function createCard(sound) {
+      const card = document.createElement('div'); card.className = 'sound-card';
+      const favBtn = document.createElement('button'); favBtn.className = 'fav-toggle'; favBtn.innerText = favorites.includes(sound.name) ? '❤' : '♡';
+      favBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFavorite(sound.name); });
+      const title = document.createElement('div'); title.className = 'sound-title'; title.innerText = sound.name;
+      const play = document.createElement('button'); play.className = 'sound-play'; play.innerText = 'Play';
+      play.addEventListener('click', () => playSound(sound));
+      card.appendChild(favBtn); card.appendChild(title); card.appendChild(play);
+      return card;
     }
 
-    function playNextInPlaylist() {
-      if (playlist.length > 0) {
-        const nextSound = playlist.shift();
-        playSound(nextSound);
-        renderPlaylist();
-      }
-    }
-
-    function renderPlaylist() {
-      const list = document.getElementById('playlist');
-      if (list) {
-        list.innerHTML = '';
-        playlist.forEach(sound => {
-          const li = document.createElement('li');
-          li.textContent = sound.name;
-          list.appendChild(li);
-        });
-      }
-    }
-
-    function checkAchievements() {
-      const totalPlays = Object.keys(localStorage).filter(k => k.startsWith('plays_')).reduce((sum, k) => sum + parseInt(localStorage.getItem(k) || 0), 0);
-      const newAchievements = [];
-      if (totalPlays >= 10 && !achievements.includes('Play 10 Sounds')) newAchievements.push('Play 10 Sounds');
-      if (combo >= 5 && !achievements.includes('5x Combo')) newAchievements.push('5x Combo');
-      if (favorites.length >= 5 && !achievements.includes('5 Favorites')) newAchievements.push('5 Favorites');
-      if (newAchievements.length) {
-        achievements.push(...newAchievements);
-        localStorage.setItem('achievements', JSON.stringify(achievements));
-        showError(`Achievement Unlocked: ${newAchievements.join(', ')}`);
-      }
-      renderAchievements();
-    }
-
-    function renderAchievements() {
-      const list = document.getElementById('achievements');
-      if (list) {
-        list.innerHTML = '';
-        achievements.forEach(a => {
-          const li = document.createElement('li');
-          li.textContent = a;
-          list.appendChild(li);
-        });
-      }
+    function renderSounds(filter = '') {
+      ['all','reverb','meme'].forEach(cat => {
+        const container = document.getElementById(cat);
+        container.innerHTML = '';
+        sounds.filter(s => (cat === 'all' || s.category === cat) && s.name.toLowerCase().includes(filter.toLowerCase()))
+          .forEach(sound => container.appendChild(createCard(sound)));
+      });
     }
 
     function renderFavorites() {
-      const list = document.getElementById('favorites-list');
-      if (list) {
-        list.innerHTML = '';
-        favorites.forEach(name => {
-          const sound = sounds.find(s => s.name === name) || uploadedSounds.find(s => s.name === name);
-          if (sound) {
-            const li = document.createElement('li');
-            createButton(sound, li);
-            list.appendChild(li);
-          }
-        });
-      }
-    }
-
-    function renderCategory(container, catSounds, tabName) {
-      currentPages[tabName] = currentPages[tabName] || 0;
+      const container = document.getElementById('favorites-list');
       container.innerHTML = '';
-      const start = currentPages[tabName] * pageSize;
-      const end = start + pageSize;
-      catSounds.slice(start, end).forEach(sound => createButton(sound, container));
-      const pag = document.createElement('div');
-      pag.classList.add('pagination');
-      const prev = document.createElement('button');
-      prev.textContent = 'Prev';
-      prev.disabled = currentPages[tabName] === 0;
-      prev.addEventListener('click', () => { currentPages[tabName]--; renderCategory(container, catSounds, tabName); });
-      const next = document.createElement('button');
-      next.textContent = 'Next';
-      next.disabled = end >= catSounds.length;
-      next.addEventListener('click', () => { currentPages[tabName]++; renderCategory(container, catSounds, tabName); });
-      pag.appendChild(prev);
-      pag.appendChild(next);
-      container.appendChild(pag);
+      favorites.forEach(name => {
+        const sound = sounds.find(s => s.name === name);
+        if (sound) container.appendChild(createCard(sound));
+      });
     }
 
-    function renderSounds() {
-      const categories = [...new Set(sounds.map(s => s.category))];
-      const tabs = document.getElementById('tabs');
-      const contents = document.getElementById('tab-contents');
-      tabs.innerHTML = '';
-      contents.innerHTML = '';
-      ['all', ...categories, 'favorites', 'settings', 'ai'].forEach(tabName => {
-        const btn = document.createElement('button');
-        btn.classList.add('tab-btn');
-        btn.textContent = tabName.charAt(0).toUpperCase() + tabName.slice(1);
-        btn.dataset.tab = tabName;
-        btn.addEventListener('click', switchTab);
-        tabs.appendChild(btn);
-        const div = document.createElement('div');
-        div.id = tabName;
-        div.classList.add('tab-content');
-        div.style.display = 'none';
-        if (tabName === 'all' || categories.includes(tabName)) div.classList.add('sound-grid');
-        contents.appendChild(div);
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        contents.forEach(c => c.style.display = 'none');
+        document.getElementById(tab.dataset.tab).style.display = 'flex';
       });
-      // Render all
-      renderCategory(document.getElementById('all'), sounds, 'all');
-      // Render per category
-      categories.forEach(cat => {
-        const container = document.getElementById(cat);
-        renderCategory(container, sounds.filter(s => s.category === cat), cat);
-      });
-      // Favorites
-      const favoritesTab = document.getElementById('favorites');
-      favoritesTab.innerHTML = '<ul id="favorites-list"></ul>';
-      renderFavorites();
-      // Settings
-      const settings = document.getElementById('settings');
-      settings.innerHTML = `
-        <label>Volume: <input type="range" id="volume" min="0" max="1" step="0.1" value="1"></label>
-        <label>Playback Speed: <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1"></label>
-        <label>Loop: <input type="checkbox" id="loop"></label>
-        <label>Auto-Play Interval (seconds, 0 disable): <input type="number" id="auto-interval" min="0" value="0"></label>
-        <label>Allow Multi-Play: <input type="checkbox" id="multi-play" checked></label>
-        <label>Add to Playlist on Play: <input type="checkbox" id="playlist-check"></label>
-        <label>Theme: <select id="theme-select"><option value="light">Light</option><option value="dark" selected>Dark</option><option value="neon">Neon</option><option value="custom">Custom</option></select></label>
-        <label>Custom Background: <input type="text" id="custom-bg" placeholder="CSS gradient or URL"></label>
-        <label>Custom Color: <input type="color" id="custom-color" value="#ffffff"></label>
-        <button id="social-login">Login to Sync Favorites</button>
-        <button id="export-playlist">Export Playlist</button>
-        <h3>Playlist Queue</h3><ul id="playlist"></ul>
-        <h3>Achievements</h3><ul id="achievements"></ul>
-      `;
-      // AI Tab
-      const aiTab = document.getElementById('ai');
-      aiTab.innerHTML = `
-        <h3>AI-Generated Sounds</h3>
-        <input id="ai-input" placeholder="Enter text to generate sound...">
-        <button id="speak-btn">Speak</button>
-      `;
-      // Bind settings events
-      document.getElementById('volume')?.addEventListener('input', (e) => currentAudios.forEach(a => a.volume = e.target.value));
-      document.getElementById('speed')?.addEventListener('input', (e) => currentAudios.forEach(a => a.playbackRate = e.target.value));
-      document.getElementById('loop')?.addEventListener('change', (e) => currentAudios.forEach(a => a.loop = e.target.checked));
-      document.getElementById('auto-interval')?.addEventListener('input', setAutoPlay);
-      document.getElementById('multi-play')?.addEventListener('change', (e) => { if (!e.target.checked) currentAudios.forEach(a => a.pause()); });
-      document.getElementById('theme-select')?.addEventListener('change', (e) => {
-        document.body.className = e.target.value;
-        if (e.target.value === 'custom') {
-          document.body.style.setProperty('--custom-bg', document.getElementById('custom-bg').value || 'linear-gradient(135deg, #1e3c72, #2a5298)');
-          document.body.style.setProperty('--custom-color', document.getElementById('custom-color').value || '#ffffff');
-        }
-      });
-      document.getElementById('custom-bg')?.addEventListener('input', (e) => {
-        if (document.getElementById('theme-select').value === 'custom') {
-          document.body.style.setProperty('--custom-bg', e.target.value);
-        }
-      });
-      document.getElementById('custom-color')?.addEventListener('input', (e) => {
-        if (document.getElementById('theme-select').value === 'custom') {
-          document.body.style.setProperty('--custom-color', e.target.value);
-        }
-      });
-      document.getElementById('social-login')?.addEventListener('click', () => showError('Social login not implemented; requires backend server.'));
-      document.getElementById('export-playlist')?.addEventListener('click', () => {
-        const blob = new Blob([JSON.stringify(playlist)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'playlist.json';
-        a.click();
-      });
-      document.getElementById('speak-btn')?.addEventListener('click', () => {
-        const text = document.getElementById('ai-input').value;
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.volume = document.getElementById('volume')?.value || 1;
-        utterance.rate = document.getElementById('speed')?.value || 1;
-        speechSynthesis.speak(utterance);
-      });
-      renderPlaylist();
-      renderAchievements();
-      // Show first tab
-      switchTab({ target: tabs.children[0] });
-    }
+    });
 
-    function switchTab(e) {
-      document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      const tab = document.getElementById(e.target.dataset.tab);
-      if (tab) {
-        tab.style.display = 'block';
-        e.target.classList.add('active');
-      }
-    }
+    searchInput.addEventListener('input', (e) => renderSounds(e.target.value));
 
-    function setAutoPlay(e) {
+    autoIntervalInput.addEventListener('input', () => {
       clearInterval(autoIntervalId);
-      const interval = parseInt(e.target.value) * 1000;
-      if (interval > 0) {
-        autoIntervalId = setInterval(() => {
-          const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-          playSound(randomSound);
-        }, interval);
-      }
-    }
-
-    // User upload
-    document.getElementById('upload').addEventListener('change', (e) => {
-      Array.from(e.target.files).forEach(file => {
-        const url = URL.createObjectURL(file);
-        const name = file.name.replace(/\.[^/.]+$/, '');
-        const sound = { name, url, category: 'uploaded', icon: '📁' };
-        uploadedSounds.push(sound);
-        sounds.push(sound);
-        renderCategory(document.getElementById('all'), sounds, 'all');
-        const uploadedTab = document.getElementById('uploaded');
-        if (uploadedTab) renderCategory(uploadedTab, sounds.filter(s => s.category === 'uploaded'), 'uploaded');
-      });
+      const sec = Number(autoIntervalInput.value);
+      if (sec > 0) autoIntervalId = setInterval(() => { const s = sounds[Math.floor(Math.random()*sounds.length)]; playSound(s); }, sec * 1000);
     });
 
-    // Import sounds
-    document.getElementById('import-sounds').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        try {
-          const imported = JSON.parse(ev.target.result);
-          sounds.push(...imported);
-          renderSounds();
-        } catch (e) {
-          showError('Invalid JSON file');
-        }
-      };
-      reader.readAsText(file);
-    });
+    darkModeInput.addEventListener('change', () => document.body.classList.toggle('dark', darkModeInput.checked));
 
-    // Dynamic sound fetching (mock API)
-    function fetchMoreSounds() {
-      // Simulated API call
-      const newSounds = [
-        { name: 'New Sound 1', url: `${baseUrl}new-sound-1.mp3`, category: 'viral', icon: '🌟' },
-        // Add more as needed
-      ];
-      sounds.push(...newSounds);
-      renderSounds();
-      showError('Fetched new sounds (simulated)');
-    }
-    setTimeout(fetchMoreSounds, 5000); // Mock fetch after 5s
-
-    // Multiplayer sync (mock WebSocket)
-    const ws = new WebSocket('wss://example.com'); // Placeholder; replace with real server
-    ws.onopen = () => console.log('WebSocket connected');
-    ws.onmessage = (e) => {
-      try {
-        const sharedPlaylist = JSON.parse(e.data);
-        playlist.push(...sharedPlaylist);
-        renderPlaylist();
-        showError('Received shared playlist');
-      } catch (e) {
-        showError('Error receiving playlist');
-      }
-    };
-    ws.onerror = () => showError('Multiplayer sync requires a WebSocket server');
-
-    // Share entire board
-    document.addEventListener('click', (e) => {
-      if (e.target.id === 'share-board') {
-        navigator.share({
-          title: 'Epic Soundboard Universe',
-          text: 'Check out my awesome soundboard!',
-          url: window.location.href
-        });
-      }
-    });
-
-    // Parallax particle background
-    const bgCanvas = document.getElementById('background-canvas');
-    const bgCtx = bgCanvas.getContext('2d');
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
-    let particles = [];
-    for (let i = 0; i < 300; i++) {
-      particles.push({
-        x: Math.random() * bgCanvas.width,
-        y: Math.random() * bgCanvas.height,
-        z: Math.random() * 4 + 1,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: Math.random() * 3 + 1,
-        color: `rgba(255, ${Math.random()*255}, 0, ${Math.random()*0.7 + 0.3})`
-      });
-    }
-    let mouseX = 0, mouseY = 0;
-    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-    function drawParticles() {
-      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-      particles.forEach(p => {
-        p.x += p.vx + (mouseX - bgCanvas.width / 2) / 1000 * (1 / p.z);
-        p.y += p.vy + (mouseY - bgCanvas.height / 2) / 1000 * (1 / p.z);
-        if (p.x < 0 || p.x > bgCanvas.width) p.vx = -p.vx;
-        if (p.y < 0 || p.y > bgCanvas.height) p.vy = -p.vy;
-        bgCtx.beginPath();
-        bgCtx.arc(p.x, p.y, p.radius / p.z, 0, Math.PI * 2);
-        bgCtx.fillStyle = p.color;
-        bgCtx.fill();
-        particles.forEach(p2 => {
-          const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist < 100) {
-            bgCtx.beginPath();
-            bgCtx.moveTo(p.x, p.y);
-            bgCtx.lineTo(p2.x, p2.y);
-            bgCtx.strokeStyle = `rgba(255, 165, 0, ${1 - dist / 100})`;
-            bgCtx.lineWidth = 1 / ((p.z + p2.z) / 2);
-            bgCtx.stroke();
-          }
-        });
-      });
-      requestAnimationFrame(drawParticles);
-    }
-    drawParticles();
-    window.addEventListener('resize', () => {
-      bgCanvas.width = window.innerWidth;
-      bgCanvas.height = window.innerHeight;
-    });
-
-    // Particle trail on hover
-    const trailCanvas = document.getElementById('trail-canvas');
-    const trailCtx = trailCanvas.getContext('2d');
-    trailCanvas.width = window.innerWidth;
-    trailCanvas.height = window.innerHeight;
-    let trailParticles = [];
-    document.addEventListener('mousemove', (e) => {
-      if (e.target.classList.contains('sound-button')) {
-        trailParticles.push({ x: e.clientX, y: e.clientY, life: 60, radius: Math.random() * 5 + 2, color: `hsl(${Math.random()*360}, 100%, 50%)` });
-      }
-      trailParticles = trailParticles.filter(p => p.life > 0);
-      trailCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
-      trailParticles.forEach(p => {
-        p.life--;
-        p.radius *= 0.95;
-        trailCtx.beginPath();
-        trailCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        trailCtx.fillStyle = p.color;
-        trailCtx.fill();
-      });
-      requestAnimationFrame(() => {});
-    });
-
-    // PWA Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js').then(reg => console.log('Service Worker registered')).catch(e => console.error('Service Worker failed', e));
-    }
-
-    // VR controls
-    document.getElementById('vr-controls').addEventListener('click', () => {
-      showError('VR mode: Use VR controllers to select sounds');
-      // Simulate VR interaction
-      const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-      playSound(randomSound);
-    });
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (e.key >= '1' && e.key <= '9') {
-        const index = parseInt(e.key) - 1;
-        const tabs = document.querySelectorAll('.tab-btn');
-        if (tabs[index]) switchTab({ target: tabs[index] });
-      } else if (e.key === '0') {
-        const soundsSlice = sounds.slice(0, 10);
-        if (soundsSlice.length > 9) playSound(soundsSlice[9]);
-      }
-    });
-
-    renderSounds();
+    renderSounds(); renderFavorites();
   </script>
 </body>
 </html>
-
-<xaiArtifact artifact_id="ad453cba-3055-49ba-b127-7d0dcbdf427d" artifact_version_id="007f114c-1f50-47e3-8fc6-d9b90ffcef19" title="manifest.json" contentType="application/json">
-{
-  "name": "Epic Soundboard Universe",
-  "short_name": "Soundboard",
-  "start_url": "epic-soundboard-v3.html",
-  "display": "standalone",
-  "background_color": "#1e3c72",
-  "theme_color": "#ff4500",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
-}
