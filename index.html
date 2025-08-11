@@ -1,196 +1,801 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fart Soundboard Extravaganza</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fart Soundboard Extravaganza Deluxe</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #111; color: #fff; text-align: center; }
-    body.dark { background: linear-gradient(to bottom, #333, #111); color: #fff; }
-    h1 { padding: 1rem; color: #ff4500; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-    nav { margin: 1rem 0; }
-    .tab-btn { background-color: #333; color: #fff; border: none; padding: 0.5rem 1rem; cursor: pointer; border-radius: 5px; margin: 0 0.25rem; }
-    .tab-btn.active { background-color: #555; }
-    .sound-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding: 1rem; }
-    .sound-card { background: #272727; border-radius: 10px; width: 150px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 10px; }
-    .sound-title { font-size: 14px; margin-bottom: 8px; }
-    .sound-play { background: #ffb400; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
-    .fav-toggle { position: absolute; top: 6px; right: 8px; background: transparent; border: none; color: #ff6b6b; font-size: 16px; cursor: pointer; }
-    #search { margin: 0.5rem 0; padding: 0.5rem; width: 80%; max-width: 400px; border-radius: 5px; border: none; }
-    #settings label { display: block; margin: 0.5rem 0; }
-    canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
-    footer { padding: 12px; color: #999; font-size: 13px; }
-    @media (max-width: 480px) { .sound-card { width: 120px; height: 110px; } }
+    /* Reset */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+      color: #222;
+      transition: background 0.4s ease, color 0.4s ease;
+      position: relative;
+    }
+    body.dark {
+      background: linear-gradient(135deg, #222 0%, #000 100%);
+      color: #ddd;
+    }
+
+    /* Particle Canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Container */
+    #app {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 900;
+      font-size: 3rem;
+      margin-bottom: 5px;
+      text-shadow: 2px 2px 5px rgba(255, 69, 0, 0.8);
+      user-select: none;
+    }
+    h2 {
+      margin-top: 0;
+      font-weight: 700;
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 15px;
+      text-shadow: 1px 1px 3px rgba(255, 69, 0, 0.7);
+      user-select: none;
+    }
+
+    /* Navigation Tabs */
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      user-select: none;
+    }
+    nav button {
+      background: #ff8c00;
+      color: white;
+      border: none;
+      padding: 12px 26px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(255, 140, 0, 0.6);
+      transition: all 0.25s ease;
+      font-weight: 700;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+    }
+    nav button:hover {
+      background: #ffa500;
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(255, 165, 0, 0.8);
+    }
+    nav button.active {
+      background: #ff4500;
+      box-shadow: 0 10px 30px rgba(255, 69, 0, 0.9);
+      transform: scale(1.15);
+    }
+
+    /* Search Input */
+    #search {
+      display: block;
+      margin: 0 auto 25px auto;
+      padding: 15px 20px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 1.2rem;
+      border: 2px solid #ff8c00;
+      border-radius: 50px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    #search:focus {
+      border-color: #ff4500;
+      box-shadow: 0 0 15px #ff4500;
+    }
+
+    /* Sound Grid */
+    .sound-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 18px;
+      user-select: none;
+    }
+    .sound-button {
+      background: #ffd700;
+      border-radius: 20px;
+      padding: 18px 15px;
+      font-weight: 700;
+      color: #444;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255, 215, 0, 0.6);
+      position: relative;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      user-select: none;
+    }
+    .sound-button:hover {
+      background: #ffe600;
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(255, 230, 0, 0.9);
+    }
+    .sound-button.playing {
+      animation: pulseGlow 1.3s infinite alternate;
+      color: #ff4500;
+      font-weight: 900;
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 12px 2px #ff4500;
+      }
+      100% {
+        box-shadow: 0 0 25px 6px #ff4500;
+      }
+    }
+
+    /* Favorites Button */
+    .fav-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 18px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s ease;
+      color: #aa4400;
+      text-shadow: 0 0 3px #ffc;
+    }
+    .fav-btn:hover {
+      transform: scale(1.2);
+      color: #ff4500;
+      text-shadow: 0 0 10px #ff4500;
+    }
+    .fav-btn.favorited {
+      color: #ff4500;
+      text-shadow: 0 0 12px #ff4500;
+    }
+
+    /* Error Box */
+    #error-box {
+      max-width: 400px;
+      margin: 15px auto 25px auto;
+      padding: 12px 18px;
+      background: #ff4c4c;
+      color: white;
+      font-weight: 700;
+      border-radius: 12px;
+      text-align: center;
+      display: none;
+      user-select: none;
+      box-shadow: 0 0 15px #ff4c4c;
+    }
+
+    /* Settings Panel */
+    #settings {
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+      background: rgba(255,255,255,0.9);
+      padding: 25px 30px;
+      border-radius: 20px;
+      box-shadow: 0 6px 18px rgba(255, 140, 0, 0.6);
+      user-select: none;
+      color: #444;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+    body.dark #settings {
+      background: rgba(34,34,34,0.85);
+      color: #eee;
+      box-shadow: 0 6px 25px rgba(255, 69, 0, 0.8);
+    }
+    #settings label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      margin: 15px 0;
+      font-size: 1.1rem;
+      user-select: none;
+    }
+    #settings input[type=range] {
+      width: 150px;
+      cursor: pointer;
+    }
+    #settings input[type=number] {
+      width: 70px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 2px solid #ff8c00;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      user-select: text;
+    }
+    #settings input[type=number]:focus {
+      outline: none;
+      border-color: #ff4500;
+      box-shadow: 0 0 10px #ff4500;
+    }
+    #settings input[type=checkbox] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    /* Favorites List */
+    #favorites-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto 40px auto;
+      max-width: 900px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
+      gap: 20px;
+      user-select: none;
+    }
+    #favorites-list li {
+      list-style: none;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ff8c00;
+      border-radius: 10px;
+    }
+    body.dark ::-webkit-scrollbar-thumb {
+      background: #ff4500;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      nav button {
+        padding: 10px 14px;
+        font-size: 1rem;
+      }
+      .sound-button {
+        font-size: 0.9rem;
+        padding: 12px 10px;
+      }
+      #settings {
+        width: 90%;
+        padding: 20px 15px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>💨 Fart Soundboard Extravaganza 💨</h1>
-  <input type="text" id="search" placeholder="Search sounds...">
-  <nav>
-    <button class="tab-btn active" data-tab="all">All</button>
-    <button class="tab-btn" data-tab="reverb">Reverb</button>
-    <button class="tab-btn" data-tab="meme">Meme</button>
-    <button class="tab-btn" data-tab="favorites">Favorites</button>
-    <button class="tab-btn" data-tab="settings">Settings</button>
-  </nav>
-
-  <div id="all" class="tab-content sound-grid" aria-live="polite"></div>
-  <div id="reverb" class="tab-content sound-grid" style="display:none"></div>
-  <div id="meme" class="tab-content sound-grid" style="display:none"></div>
-  <div id="favorites" class="tab-content" style="display:none">
-    <div id="favorites-list" class="sound-grid"></div>
-  </div>
-  <div id="settings" class="tab-content" style="display:none; padding: 1rem;">
-    <label>Volume: <input type="range" id="volume" min="0" max="1" step="0.01" value="1"></label>
-    <label>Speed: <input type="range" id="speed" min="0.5" max="2" step="0.01" value="1"></label>
-    <label>Loop: <input type="checkbox" id="loop"></label>
-    <label>Auto-play interval (sec, 0 to disable): <input type="number" id="auto-interval" min="0" value="0"></label>
-    <label>Allow multi-play: <input type="checkbox" id="multi-play" checked></label>
-    <label>Dark mode: <input type="checkbox" id="dark-mode"></label>
-  </div>
-
+  <canvas id="particle-canvas"></canvas>
   <canvas id="confetti-canvas"></canvas>
-  <footer>Put your .mp3 files in a <code>/sounds/</code> folder and name them exactly as listed.</footer>
+  <div id="app">
+    <h1>💨 Fart Soundboard Extravaganza Deluxe 💨</h1>
+    <nav>
+      <button class="tab-btn active" data-tab="all">All Sounds</button>
+      <button class="tab-btn" data-tab="reverb">Reverb Farts</button>
+      <button class="tab-btn" data-tab="meme">Meme Farts</button>
+      <button class="tab-btn" data-tab="favorites">Favorites ❤️</button>
+      <button class="tab-btn" data-tab="settings">Settings ⚙️</button>
+    </nav>
+    <input type="text" id="search" placeholder="Search sounds..." autocomplete="off" spellcheck="false" />
+    <div id="error-box"></div>
+
+    <div id="all" class="tab-content sound-grid"></div>
+    <div id="reverb" class="tab-content sound-grid" style="display:none;"></div>
+    <div id="meme" class="tab-content sound-grid" style="display:none;"></div>
+    <ul id="favorites-list" class="tab-content" style="display:none;"></ul>
+    <section id="settings" class="tab-content" style="display:none;">
+      <label>
+        Volume
+        <input type="range" id="volume" min="0" max="1" step="0.05" value="1" />
+      </label>
+      <label>
+        Playback Speed
+        <input type="range" id="speed" min="0.5" max="2" step="0.05" value="1" />
+      </label>
+      <label>
+        Loop Playback
+        <input type="checkbox" id="loop" />
+      </label>
+      <label>
+        Allow Multi-Play
+        <input type="checkbox" id="multi-play" checked />
+      </label>
+      <label>
+        Auto-Play Interval (seconds, 0 to disable)
+        <input type="number" id="auto-interval" min="0" step="1" value="0" />
+      </label>
+      <label>
+        Dark Mode
+        <input type="checkbox" id="dark-mode" />
+      </label>
+    </section>
+  </div>
 
   <script>
-    const sounds = [
-      { name: 'Dry Fart', url: 'sounds/dry-fart.mp3', category: 'all' },
-      { name: 'Fart with Reverb', url: 'sounds/fart-with-reverb.mp3', category: 'reverb' },
-      { name: 'Fart Echo', url: 'sounds/fart-echo.mp3', category: 'reverb' },
-      { name: 'Wet Fart Meme', url: 'sounds/wet-fart-meme.mp3', category: 'meme' },
-      { name: 'Tiktok Fart Sound', url: 'sounds/tiktok-fart-sound.mp3', category: 'meme' },
-      { name: 'Movie Fart', url: 'sounds/movie-fart.mp3', category: 'meme' },
-      { name: 'Fart Bass Boosted', url: 'sounds/fart-bass-boosted.mp3', category: 'reverb' },
-      { name: 'Brain Fart Slowed', url: 'sounds/brain-fart-slowed.mp3', category: 'meme' },
-      { name: 'Goofy Ahh Fart', url: 'sounds/goofy-ahh-fart.mp3', category: 'meme' },
-      { name: 'Mega Fart', url: 'sounds/mega-fart.mp3', category: 'all' },
-      { name: 'Fart with Extra Reverb', url: 'sounds/fart-with-extra-reverb.mp3', category: 'reverb' },
-      { name: 'Quick Fart with Reverb', url: 'sounds/quick-fart-with-reverb.mp3', category: 'reverb' },
-      { name: 'Perfect Fart', url: 'sounds/perfect-fart.mp3', category: 'all' },
-      { name: 'Long Brain Fart', url: 'sounds/long-brain-fart.mp3', category: 'meme' },
-      { name: 'Bowser Fart', url: 'sounds/bowser-fart.mp3', category: 'meme' },
-      { name: 'Squeak Fart with Reverb', url: 'sounds/squeak-fart-with-reverb.mp3', category: 'reverb' },
-      { name: 'Fart Sound Effect 3', url: 'sounds/fart-sound-effect-3.mp3', category: 'all' },
-      { name: 'Fart Reverb Without Reverb', url: 'sounds/fart-reverb-without-reverb.mp3', category: 'reverb' },
-      { name: 'Nicki Minaj Fart Remix', url: 'sounds/nicki-minaj-fart-remix.mp3', category: 'meme' },
-      { name: 'Fart Meme Sound', url: 'sounds/fart-meme-sound.mp3', category: 'meme' }
-    ];
+    (() => {
+      // Sound data (excluded echo, tiktok, movie)
+      const sounds = [
+        { name: 'Dry Fart', url: 'https://www.myinstants.com/media/sounds/dry-fart.mp3', category: 'all' },
+        { name: 'Fart with Reverb', url: 'https://www.myinstants.com/media/sounds/fart-with-reverb.mp3', category: 'reverb' },
+        { name: 'Fart Bass Boosted', url: 'https://www.myinstants.com/media/sounds/fart-bass-boosted.mp3', category: 'reverb' },
+        { name: 'Fart with Extra Reverb', url: 'https://www.myinstants.com/media/sounds/fart-with-extra-reverb.mp3', category: 'reverb' },
+        { name: 'Quick Fart with Reverb', url: 'https://www.myinstants.com/media/sounds/quick-fart-with-reverb.mp3', category: 'reverb' },
+        { name: 'Squeak Fart with Reverb', url: 'https://www.myinstants.com/media/sounds/squeak-fart-with-reverb.mp3', category: 'reverb' },
+        { name: 'Fart Reverb Without Reverb', url: 'https://www.myinstants.com/media/sounds/fart-reverb-without-reverb.mp3', category: 'reverb' },
 
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.tab-content');
-    const searchInput = document.getElementById('search');
-    const volumeInput = document.getElementById('volume');
-    const speedInput = document.getElementById('speed');
-    const loopInput = document.getElementById('loop');
-    const multiPlayInput = document.getElementById('multi-play');
-    const autoIntervalInput = document.getElementById('auto-interval');
-    const darkModeInput = document.getElementById('dark-mode');
-    const favoritesKey = 'fart_favorites_v1';
-    let favorites = JSON.parse(localStorage.getItem(favoritesKey) || '[]');
-    let currentAudios = [];
-    let autoIntervalId = null;
+        { name: 'Wet Fart Meme', url: 'https://www.myinstants.com/media/sounds/wet-fart-meme.mp3', category: 'meme' },
+        { name: 'Brain Fart Slowed', url: 'https://www.myinstants.com/media/sounds/brain-fart-slowed.mp3', category: 'meme' },
+        { name: 'Goofy Ahh Fart', url: 'https://www.myinstants.com/media/sounds/goofy-ahh-fart.mp3', category: 'meme' },
+        { name: 'Long Brain Fart', url: 'https://www.myinstants.com/media/sounds/long-brain-fart.mp3', category: 'meme' },
+        { name: 'Bowser Fart', url: 'https://www.myinstants.com/media/sounds/bowser-fart.mp3', category: 'meme' },
+        { name: 'Nicki Minaj Fart Remix', url: 'https://www.myinstants.com/media/sounds/nicki-minaj-fart-remix.mp3', category: 'meme' },
+        { name: 'Fart Meme Sound', url: 'https://www.myinstants.com/media/sounds/fart-meme-sound.mp3', category: 'meme' },
 
-    function ensureCanvasSize() {
-      const canvas = document.getElementById('confetti-canvas');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+        { name: 'Mega Fart', url: 'https://www.myinstants.com/media/sounds/mega-fart.mp3', category: 'all' },
+        { name: 'Perfect Fart', url: 'https://www.myinstants.com/media/sounds/perfect-fart.mp3', category: 'all' },
+        { name: 'Fart Sound Effect 3', url: 'https://www.myinstants.com/media/sounds/fart-sound-effect-3.mp3', category: 'all' },
+      ];
 
-    window.addEventListener('resize', ensureCanvasSize);
-    ensureCanvasSize();
+      // DOM refs
+      const tabs = document.querySelectorAll('.tab-btn');
+      const errorBox = document.getElementById('error-box');
+      const searchInput = document.getElementById('search');
+      const allContainer = document.getElementById('all');
+      const reverbContainer = document.getElementById('reverb');
+      const memeContainer = document.getElementById('meme');
+      const favoritesList = document.getElementById('favorites-list');
+      const settingsPanel = document.getElementById('settings');
+      const volumeControl = document.getElementById('volume');
+      const speedControl = document.getElementById('speed');
+      const loopControl = document.getElementById('loop');
+      const multiPlayControl = document.getElementById('multi-play');
+      const autoIntervalControl = document.getElementById('auto-interval');
+      const darkModeControl = document.getElementById('dark-mode');
 
-    function confetti() {
-      const canvas = document.getElementById('confetti-canvas');
-      const ctx = canvas.getContext('2d');
-      const particles = [];
-      for (let i = 0; i < 40; i++) {
-        particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height * 0.5, r: Math.random() * 8 + 4, vx: Math.random() * 6 - 3, vy: Math.random() * 6 - 3, color: `hsl(${Math.random()*360},80%,60%)` });
+      let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      let currentAudios = [];
+      let autoPlayIntervalId = null;
+
+      // --- TAB NAVIGATION ---
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+          if(tab.dataset.tab === 'favorites') {
+            renderFavorites();
+            favoritesList.style.display = 'grid';
+          } else if(tab.dataset.tab === 'settings') {
+            settingsPanel.style.display = 'block';
+          } else {
+            document.getElementById(tab.dataset.tab).style.display = 'grid';
+          }
+          errorBox.style.display = 'none';
+          searchInput.value = '';
+          renderSounds('');
+        });
+      });
+
+      // --- RENDER SOUNDS ---
+      function createSoundButton(sound) {
+        const btn = document.createElement('button');
+        btn.className = 'sound-button';
+        btn.textContent = sound.name;
+        btn.title = `Play "${sound.name}"`;
+        btn.tabIndex = 0;
+
+        // Favorite Button
+        const favBtn = document.createElement('button');
+        favBtn.className = 'fav-btn';
+        favBtn.innerHTML = favorites.includes(sound.url) ? '❤️' : '🤍';
+        if(favorites.includes(sound.url)) favBtn.classList.add('favorited');
+        favBtn.title = favorites.includes(sound.url) ? 'Remove from favorites' : 'Add to favorites';
+        favBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          toggleFavorite(sound.url, favBtn);
+        });
+        btn.appendChild(favBtn);
+
+        btn.addEventListener('click', () => playSound(sound, btn));
+        return btn;
       }
-      function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        let alive = false;
-        for (const p of particles) {
-          if (p.r > 0.5) alive = true;
-          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle = p.color; ctx.fill();
-          p.x += p.vx; p.y += p.vy; p.r *= 0.96;
+
+      function renderSounds(filter = '') {
+        [allContainer, reverbContainer, memeContainer].forEach(container => (container.innerHTML = ''));
+        sounds.forEach(sound => {
+          if(!sound.name.toLowerCase().includes(filter.toLowerCase())) return;
+          if (allContainer && (sound.category === 'all' || sound.category === 'reverb' || sound.category === 'meme')) {
+            if(sound.category === 'all') allContainer.appendChild(createSoundButton(sound));
+            else if(sound.category === 'reverb') reverbContainer.appendChild(createSoundButton(sound));
+            else if(sound.category === 'meme') memeContainer.appendChild(createSoundButton(sound));
+          }
+        });
+      }
+
+      // --- FAVORITES ---
+      function renderFavorites() {
+        favoritesList.innerHTML = '';
+        if(favorites.length === 0) {
+          const emptyMsg = document.createElement('p');
+          emptyMsg.textContent = "You don't have any favorites yet. Click ❤️ on a sound to add it here!";
+          emptyMsg.style.textAlign = 'center';
+          emptyMsg.style.fontStyle = 'italic';
+          emptyMsg.style.gridColumn = '1 / -1';
+          favoritesList.appendChild(emptyMsg);
+          return;
         }
-        if (alive) requestAnimationFrame(draw); else ctx.clearRect(0,0,canvas.width,canvas.height);
+        favorites.forEach(url => {
+          const sound = sounds.find(s => s.url === url);
+          if(sound) {
+            const li = document.createElement('li');
+            const btn = createSoundButton(sound);
+            li.appendChild(btn);
+            favoritesList.appendChild(li);
+          }
+        });
       }
-      draw();
-    }
 
-    function playSound(sound) {
-      if (!multiPlayInput.checked) {
-        currentAudios.forEach(a => { try { a.pause(); a.currentTime = 0; } catch(e) {} });
-        currentAudios = [];
+      function toggleFavorite(url, btn) {
+        const idx = favorites.indexOf(url);
+        if(idx === -1) {
+          favorites.push(url);
+          btn.textContent = '❤️';
+          btn.classList.add('favorited');
+          btn.title = 'Remove from favorites';
+        } else {
+          favorites.splice(idx, 1);
+          btn.textContent = '🤍';
+          btn.classList.remove('favorited');
+          btn.title = 'Add to favorites';
+        }
+        localStorage.setItem('favorites', JSON.stringify(favorites));
       }
-      const audio = new Audio(sound.url);
-      audio.crossOrigin = 'anonymous';
-      audio.volume = Number(volumeInput.value);
-      audio.playbackRate = Number(speedInput.value);
-      audio.loop = loopInput.checked;
-      audio.addEventListener('error', () => { alert('Failed to load audio: ' + sound.url); });
-      audio.play().catch(() => {});
-      currentAudios.push(audio);
-      confetti();
-    }
 
-    function toggleFavorite(name) {
-      if (favorites.includes(name)) favorites = favorites.filter(x => x !== name); else favorites.push(name);
-      localStorage.setItem(favoritesKey, JSON.stringify(favorites));
-      renderFavorites();
-      renderSounds(searchInput.value);
-    }
+      // --- PLAY SOUND ---
+      function playSound(sound, button) {
+        errorBox.style.display = 'none';
 
-    function createCard(sound) {
-      const card = document.createElement('div'); card.className = 'sound-card';
-      const favBtn = document.createElement('button'); favBtn.className = 'fav-toggle'; favBtn.innerText = favorites.includes(sound.name) ? '❤' : '♡';
-      favBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFavorite(sound.name); });
-      const title = document.createElement('div'); title.className = 'sound-title'; title.innerText = sound.name;
-      const play = document.createElement('button'); play.className = 'sound-play'; play.innerText = 'Play';
-      play.addEventListener('click', () => playSound(sound));
-      card.appendChild(favBtn); card.appendChild(title); card.appendChild(play);
-      return card;
-    }
+        if(!multiPlayControl.checked) {
+          currentAudios.forEach(aud => aud.pause());
+          currentAudios.length = 0;
+        }
 
-    function renderSounds(filter = '') {
-      ['all','reverb','meme'].forEach(cat => {
-        const container = document.getElementById(cat);
-        container.innerHTML = '';
-        sounds.filter(s => (cat === 'all' || s.category === cat) && s.name.toLowerCase().includes(filter.toLowerCase()))
-          .forEach(sound => container.appendChild(createCard(sound)));
+        const audio = new Audio(sound.url);
+        audio.volume = parseFloat(volumeControl.value);
+        audio.playbackRate = parseFloat(speedControl.value);
+        audio.loop = loopControl.checked;
+
+        audio.play().then(() => {
+          if(button) {
+            button.classList.add('playing');
+            setTimeout(() => button.classList.remove('playing'), 1500);
+          }
+          launchConfetti();
+        }).catch(() => {
+          errorBox.textContent = `Failed to load audio: ${sound.name}`;
+          errorBox.style.display = 'block';
+        });
+
+        currentAudios.push(audio);
+
+        audio.addEventListener('ended', () => {
+          const idx = currentAudios.indexOf(audio);
+          if(idx !== -1) currentAudios.splice(idx, 1);
+        });
+      }
+
+      // --- SEARCH ---
+      searchInput.addEventListener('input', e => {
+        const filter = e.target.value.trim();
+        renderSounds(filter);
       });
-    }
 
-    function renderFavorites() {
-      const container = document.getElementById('favorites-list');
-      container.innerHTML = '';
-      favorites.forEach(name => {
-        const sound = sounds.find(s => s.name === name);
-        if (sound) container.appendChild(createCard(sound));
+      // --- SETTINGS PERSISTENCE ---
+      function loadSettings() {
+        const vol = localStorage.getItem('volume');
+        if(vol !== null) volumeControl.value = vol;
+
+        const spd = localStorage.getItem('speed');
+        if(spd !== null) speedControl.value = spd;
+
+        const looped = localStorage.getItem('loop');
+        if(looped !== null) loopControl.checked = looped === 'true';
+
+        const multi = localStorage.getItem('multiPlay');
+        if(multi !== null) multiPlayControl.checked = multi === 'true';
+
+        const autoInt = localStorage.getItem('autoInterval');
+        if(autoInt !== null) autoIntervalControl.value = autoInt;
+
+        const dark = localStorage.getItem('darkMode');
+        if(dark !== null) {
+          darkModeControl.checked = dark === 'true';
+          updateDarkMode(darkModeControl.checked);
+        }
+      }
+      function saveSettings() {
+        localStorage.setItem('volume', volumeControl.value);
+        localStorage.setItem('speed', speedControl.value);
+        localStorage.setItem('loop', loopControl.checked);
+        localStorage.setItem('multiPlay', multiPlayControl.checked);
+        localStorage.setItem('autoInterval', autoIntervalControl.value);
+        localStorage.setItem('darkMode', darkModeControl.checked);
+      }
+
+      // --- DARK MODE ---
+      function updateDarkMode(enabled) {
+        if(enabled) document.body.classList.add('dark');
+        else document.body.classList.remove('dark');
+      }
+      darkModeControl.addEventListener('change', e => {
+        updateDarkMode(e.target.checked);
+        saveSettings();
       });
-    }
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        contents.forEach(c => c.style.display = 'none');
-        document.getElementById(tab.dataset.tab).style.display = 'flex';
+      // --- SETTINGS EVENTS ---
+      volumeControl.addEventListener('input', saveSettings);
+      speedControl.addEventListener('input', saveSettings);
+      loopControl.addEventListener('change', saveSettings);
+      multiPlayControl.addEventListener('change', saveSettings);
+      autoIntervalControl.addEventListener('input', () => {
+        saveSettings();
+        restartAutoPlay();
       });
-    });
 
-    searchInput.addEventListener('input', (e) => renderSounds(e.target.value));
+      // --- AUTO PLAY ---
+      function restartAutoPlay() {
+        if(autoPlayIntervalId) {
+          clearInterval(autoPlayIntervalId);
+          autoPlayIntervalId = null;
+        }
+        const intervalSec = parseInt(autoIntervalControl.value);
+        if(intervalSec > 0) {
+          autoPlayIntervalId = setInterval(() => {
+            const allSounds = [...document.querySelectorAll('#all button.sound-button')];
+            if(allSounds.length === 0) return;
+            // Play random sound from current tab only:
+            const activeTab = [...tabs].find(t => t.classList.contains('active')).dataset.tab;
+            let candidates = [];
+            if(activeTab === 'all') candidates = allSounds;
+            else if(activeTab === 'reverb') candidates = [...document.querySelectorAll('#reverb button.sound-button')];
+            else if(activeTab === 'meme') candidates = [...document.querySelectorAll('#meme button.sound-button')];
+            else return;
+            if(candidates.length === 0) return;
+            const randBtn = candidates[Math.floor(Math.random() * candidates.length)];
+            randBtn.click();
+          }, intervalSec * 1000);
+        }
+      }
 
-    autoIntervalInput.addEventListener('input', () => {
-      clearInterval(autoIntervalId);
-      const sec = Number(autoIntervalInput.value);
-      if (sec > 0) autoIntervalId = setInterval(() => { const s = sounds[Math.floor(Math.random()*sounds.length)]; playSound(s); }, sec * 1000);
-    });
+      // --- PARTICLES BACKGROUND ---
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      const particles = [];
+      const particleCount = 90;
+      const maxDistance = 120;
 
-    darkModeInput.addEventListener('change', () => document.body.classList.toggle('dark', darkModeInput.checked));
+      function randomRange(min, max) {
+        return Math.random() * (max - min) + min;
+      }
 
-    renderSounds(); renderFavorites();
+      function createParticles() {
+        particles.length = 0;
+        for(let i = 0; i < particleCount; i++) {
+          particles.push({
+            x: randomRange(0, width),
+            y: randomRange(0, height),
+            vx: randomRange(-0.3, 0.3),
+            vy: randomRange(-0.3, 0.3),
+            size: randomRange(1, 3),
+          });
+        }
+      }
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * devicePixelRatio;
+        canvas.height = height * devicePixelRatio;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'rgba(255, 140, 0, 0.9)';
+        ctx.strokeStyle = 'rgba(255, 140, 0, 0.35)';
+        ctx.lineWidth = 1;
+
+        // Move particles
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if(p.x < 0 || p.x > width) p.vx *= -1;
+          if(p.y < 0 || p.y > height) p.vy *= -1;
+        });
+
+        // Draw particles
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Draw connections
+        for(let i = 0; i < particles.length; i++) {
+          for(let j = i + 1; j < particles.length; j++) {
+            const p1 = particles[i];
+            const p2 = particles[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < maxDistance) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(255,140,0,${1 - dist / maxDistance})`;
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function animateParticles() {
+        drawParticles();
+        requestAnimationFrame(animateParticles);
+      }
+
+      // --- CONFETTI ---
+      const confettiCanvas = document.getElementById('confetti-canvas');
+      const confettiCtx = confettiCanvas.getContext('2d');
+      let confettiParticles = [];
+      const confettiColors = ['#ff4500','#ffa500','#ffd700','#ff6347','#ff8c00'];
+      const confettiCount = 80;
+
+      class ConfettiParticle {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * confettiCanvas.width;
+          this.y = Math.random() * confettiCanvas.height - confettiCanvas.height;
+          this.size = (Math.random() * 6) + 4;
+          this.color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+          this.speed = Math.random() * 2 + 1;
+          this.tilt = Math.random() * 10 - 10;
+          this.tiltSpeed = Math.random() * 0.1 + 0.05;
+          this.opacity = 1;
+          this.drift = (Math.random() * 2) - 1;
+        }
+        update() {
+          this.y += this.speed;
+          this.x += this.drift;
+          this.tilt += this.tiltSpeed;
+          if(this.y > confettiCanvas.height) this.reset();
+        }
+        draw(ctx) {
+          ctx.beginPath();
+          ctx.lineWidth = this.size / 2;
+          ctx.strokeStyle = this.color;
+          ctx.moveTo(this.x + this.tilt, this.y);
+          ctx.lineTo(this.x, this.y + this.tilt + (this.size / 2));
+          ctx.stroke();
+        }
+      }
+
+      function initConfetti() {
+        confettiParticles = [];
+        for(let i = 0; i < confettiCount; i++) {
+          confettiParticles.push(new ConfettiParticle());
+        }
+      }
+
+      function resizeConfetti() {
+        confettiCanvas.width = window.innerWidth * devicePixelRatio;
+        confettiCanvas.height = window.innerHeight * devicePixelRatio;
+        confettiCanvas.style.width = window.innerWidth + 'px';
+        confettiCanvas.style.height = window.innerHeight + 'px';
+        confettiCtx.setTransform(1, 0, 0, 1, 0, 0);
+        confettiCtx.scale(devicePixelRatio, devicePixelRatio);
+      }
+
+      function drawConfetti() {
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        confettiParticles.forEach(p => {
+          p.update();
+          p.draw(confettiCtx);
+        });
+      }
+
+      function animateConfetti() {
+        drawConfetti();
+        requestAnimationFrame(animateConfetti);
+      }
+
+      function launchConfetti() {
+        // Start confetti for ~2 seconds
+        confettiActive = true;
+        confettiTimeout && clearTimeout(confettiTimeout);
+        confettiTimeout = setTimeout(() => { confettiActive = false; }, 2000);
+      }
+
+      let confettiActive = false;
+      let confettiTimeout = null;
+
+      function confettiLoop() {
+        if(confettiActive) {
+          animateConfetti();
+        } else {
+          confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        }
+        requestAnimationFrame(confettiLoop);
+      }
+
+      // --- INIT ---
+      function init() {
+        resizeCanvas();
+        createParticles();
+        animateParticles();
+
+        resizeConfetti();
+        initConfetti();
+        confettiLoop();
+
+        loadSettings();
+        renderSounds();
+        restartAutoPlay();
+      }
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        resizeConfetti();
+      });
+
+      init();
+    })();
   </script>
 </body>
 </html>
